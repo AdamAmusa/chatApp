@@ -3,8 +3,6 @@ import Box from "@mui/material/Box";
 import { styled,alpha } from '@mui/material/styles';
 import MuiCard from '@mui/material/Card';
 import Button from '@mui/material/Button';
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
 
 
@@ -110,7 +108,7 @@ const ButtonI = styled(Button)(({ theme }) => ({
 }));
 
 
-function Login() {
+function SignUp() {
     return (
         <div className="Login">
             <Card variant="" >
@@ -151,6 +149,16 @@ function Login() {
                         />
                     </FormControl>
 
+                    <FormControl variant="standard">
+                        <InputLabel shrink htmlFor="bootstrap-input">
+                            Confirm Password
+                        </InputLabel>
+                        <BootstrapInput id="bootstrap-input"
+                        type = "password"
+                        required
+                        />
+                    </FormControl>
+
 
                     <ButtonS
                         type="submit"
@@ -159,22 +167,8 @@ function Login() {
                         
                     //onClick={validateInputs}
                     >
-                        Sign in
+                        Sign up
                     </ButtonS>
-
-                    <Typography sx={{ textAlign: 'center' }}>
-                        Don&apos;t have an account?{' '}
-                        <span>
-                            <Link
-                                to="/signup"
-                                href="/signup"
-                                variant="body2"
-                                sx={{ alignSelf: 'center' }}
-                            >
-                                Sign up
-                            </Link>
-                        </span>
-                    </Typography>
                 </Box>
                 
                 <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
@@ -185,7 +179,7 @@ function Login() {
                         onClick={() => alert('Sign in with Google')}
                         startIcon={<GoogleIcon />}
                     >
-                        Log in with Google
+                        Sign up with Google
                     </ButtonI>
                     <ButtonI
                         type="submit"
@@ -194,7 +188,7 @@ function Login() {
                         onClick={() => alert('Sign in with Facebook')}
                         startIcon={<FacebookIcon />}
                     >
-                        Log in with Facebook
+                        Sign up with Facebook
                     </ButtonI>
 
                 </Box>
@@ -204,4 +198,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default SignUp;
