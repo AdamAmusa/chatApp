@@ -9,8 +9,8 @@ function App() {
       <header className="App-header">
         <Router>
           <Routes>
-            <Route path="/signup" element={<SignUp />} />  {/* Use JSX here */}
-            <Route path="/login" element={<Login />} />  {/* Use JSX here */}
+            <Route path="/signup" element={<SignUp />} />  
+            <Route path="/login" element={<Login />} />
           </Routes>
         </Router>
       </header>
