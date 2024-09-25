@@ -4,6 +4,7 @@ import { styled,alpha } from '@mui/material/styles';
 import MuiCard from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
+import {signInGoogle} from "./server";
 
 
 
@@ -176,10 +177,11 @@ function SignUp() {
                         type="submit"
                         fullWidth
                         variant="outlined"
-                        onClick={() => alert('Sign in with Google')}
+                        onClick={signInGoogle}
                         startIcon={<GoogleIcon />}
                     >
                         Sign up with Google
+                        
                     </ButtonI>
                     <ButtonI
                         type="submit"
