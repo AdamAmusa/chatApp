@@ -4,8 +4,8 @@ import { styled,alpha } from '@mui/material/styles';
 import MuiCard from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
-import {signInGoogle} from "./server";
-
+import {signInGoogle, } from "./server";
+import useFetch from "./server";
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -109,7 +109,9 @@ const ButtonI = styled(Button)(({ theme }) => ({
 }));
 
 
+
 function SignUp() {
+    useFetch();
     return (
         <div className="Login">
             <Card variant="" >

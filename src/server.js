@@ -4,12 +4,15 @@ import { getAnalytics } from "firebase/analytics";
 import 'firebase/firestore';
 import 'firebase/auth'
 
-import { useState } from 'react'; // Import useState hook
+import { useNavigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Login from "./Login";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";  // Auth and Google provider imports
 import ChatPage from "./chatPage";
+import SignUp from "./SignUp";
+import { useEffect } from "react";
+
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -36,12 +39,13 @@ const firestore = getFirestore(app);
 
 
 
-export const signInGoogle = async() => {
+export const signInGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try {
         // Await the sign-in process
         await signInWithPopup(auth, provider);
         console.log("User signed in successfully");
+
     } catch (error) {
         if (error.code === 'auth/cancelled-popup-request') {
             console.warn('Popup request cancelled:', error);
@@ -54,27 +58,24 @@ export const signInGoogle = async() => {
 }
 
 
-function Server() {
-    
-    const [loading, setLoading] = useState(false);  // Handle loading state for sign-in
+
+
+const useFetch = () => {
     const [user] = useAuthState(auth);
-    return (
-        <div>
+    const navigate = useNavigate();
 
-            <header>
+    useEffect(() => {
+            if (user) {
+                console.log("redirected")
+                navigate("/chatpage")
+            } else {
+                console.log("No successful sign in");
+            }
+      
+    }, [user]);
+};
 
-            </header>
-
-            <section>
-                {user ? <ChatPage /> : <Login />}
-            </section>
-
-        </div>
-    );
-
-}
-
-export { auth, firestore };
+export default useFetch;
 
 
 
