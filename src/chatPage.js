@@ -11,8 +11,8 @@ function ChatPage() {
             <Box sx={{
                 display: "flex",
                 position: "absolute",
-                top: 0,
-                left: 0,    
+                top: 5,
+                left: 5,    
             }}>
                 <Button variant="outlined" size="small">Logout</Button>
             </Box>
