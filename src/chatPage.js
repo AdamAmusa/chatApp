@@ -1,9 +1,10 @@
 import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
+import { useSignOut } from './server';
 
 function ChatPage() {
     console.log("In chat page");
-  
+    const signOut = useSignOut();
     
     return (
     
@@ -14,7 +15,7 @@ function ChatPage() {
                 top: 5,
                 left: 5,    
             }}>
-                <Button variant="outlined" size="small">Logout</Button>
+                <Button onClick={signOut} variant="outlined" size="small">Logout</Button>
             </Box>
             
             <h1 style={{color: "black"}} >Chat Page !</h1>

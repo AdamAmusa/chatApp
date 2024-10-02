@@ -65,15 +65,31 @@ const useFetch = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-            if (user) {
-                console.log("redirected")
-                navigate("/chatpage")
-            } else {
-                console.log("No successful sign in");
-            }
-      
+        if (user) {
+            console.log("redirected" + user);
+            navigate("/chatpage")
+        } else {
+            console.log("No successful sign in");
+
+        }
+
     }, [user]);
 };
+
+
+export const useSignOut = () => {
+    const navigate = useNavigate();
+
+    const signOutUser = async () => {
+        if (auth.currentUser) {
+            await auth.signOut();
+            navigate("/login");
+        }
+    };
+    return signOutUser;
+
+
+}
 
 export default useFetch;
 
