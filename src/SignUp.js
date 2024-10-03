@@ -3,9 +3,16 @@ import Box from "@mui/material/Box";
 import { styled,alpha } from '@mui/material/styles';
 import MuiCard from '@mui/material/Card';
 import Button from '@mui/material/Button';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
+
+import { GoogleIcon, FacebookIcon} from './CustomIcons';
+
+import { useEffect, useState } from "react";
+
 import {signInGoogle, } from "./server";
 import useFetch from "./server";
+
+import { signUpUser } from "./server";
+
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -109,9 +116,35 @@ const ButtonI = styled(Button)(({ theme }) => ({
 }));
 
 
-
 function SignUp() {
     useFetch();
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [isFormValid, setIsFormValid] = useState(false);
+
+    useEffect(() =>{
+        if(password === confirmPassword && password != ""){
+            setIsFormValid(true)
+        } else{
+            setIsFormValid(false);
+        }
+     }, [email, password, confirmPassword]);
+
+
+     const Submit = () =>{
+        console.log("Button Pressed!");
+        if(isFormValid){
+            console.log("Successfull sign up")
+            signUpUser(email, password);
+        }
+        else{
+            console.log("Error signing up");
+        }
+     }
+    
+
     return (
         <div className="Login">
             <Card variant="" >
@@ -133,11 +166,12 @@ function SignUp() {
                         </InputLabel>
                         <BootstrapInput id="bootstrap-input"
                         
+                        value ={email}
                         type="email"
                         required
                         autoComplete="email"
                         autoFocus
-                        
+                        onChange={(e) => setEmail(e.target.value)}
                         />
                     </FormControl>
 
@@ -147,8 +181,10 @@ function SignUp() {
                             Password
                         </InputLabel>
                         <BootstrapInput id="bootstrap-input"
+                        //value={password}
                         type = "password"
                         required
+                        onChange={(e) => setPassword(e.target.value)}
                         />
                     </FormControl>
 
@@ -157,17 +193,19 @@ function SignUp() {
                             Confirm Password
                         </InputLabel>
                         <BootstrapInput id="bootstrap-input"
+                        value={confirmPassword}
                         type = "password"
                         required
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                     </FormControl>
 
 
                     <ButtonS
-                        type="submit"
+                        //type="submit"
                         fullWidth
                         variant="contained"
-                        
+                        onClick={Submit}
                     //onClick={validateInputs}
                     >
                         Sign up

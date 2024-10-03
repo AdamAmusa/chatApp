@@ -3,16 +3,13 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import 'firebase/firestore';
 import 'firebase/auth'
-
-import { useNavigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import Login from "./Login";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";  // Auth and Google provider imports
-import ChatPage from "./chatPage";
-import SignUp from "./SignUp";
-import { useEffect } from "react";
+import {createUserWithEmailAndPassword } from "firebase/auth";
 
+import { useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -27,17 +24,26 @@ const firebaseConfig = {
     messagingSenderId: "485655526487",
     appId: "1:485655526487:web:95eb688ead5ed43e0b7712",
     measurementId: "G-4CGDENJTGF"
-};
+  };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);  // Initialize the Firebase app
 const auth = getAuth(app);                  // Initialize Firebase Authentication
-const analytics = getAnalytics(app);
-const firestore = getFirestore(app);
 
 
-
-
+export const signUpUser = (email, password) =>{
+createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed up 
+    const user = userCredential.user;
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // ..
+  });
+}
 
 export const signInGoogle = async () => {
     const provider = new GoogleAuthProvider();
