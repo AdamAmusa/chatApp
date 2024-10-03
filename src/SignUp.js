@@ -133,6 +133,8 @@ function SignUp() {
     const [passwordError, setPasswordError] = useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
 
+    const [disableButton, setdisableButton] = useState(false);
+
     const confirmInputs = () =>{
         const email = document.getElementById('email');
 
@@ -177,6 +179,7 @@ function SignUp() {
         validForm = confirmInputs();
         console.log("Button Pressed!");
         if(validForm){
+            setdisableButton(true);
             console.log("Successfull sign up")
             signUpUser(email, password);
         }
@@ -252,6 +255,7 @@ function SignUp() {
                         fullWidth
                         variant="contained"
                         onClick={Submit}
+                        disabled={disableButton}
                     //onClick={validateInputs}
                     >
                         Sign up
