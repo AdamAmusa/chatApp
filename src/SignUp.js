@@ -1,3 +1,4 @@
+import React from "react";
 import { FormControl, FormLabel, TextField, InputLabel, InputBase } from "@mui/material";
 import Box from "@mui/material/Box";
 import { styled,alpha } from '@mui/material/styles';
@@ -36,7 +37,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
     
 }));
 
-const BootstrapInput = styled(InputBase)(({ theme }) => ({
+const BootstrapInput = styled(TextField)(({ theme }) => ({
     'label + &': {
         marginTop: theme.spacing(3),
     },
@@ -123,6 +124,27 @@ function SignUp() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
+    const [emailError, setEmailError] = useState(false);
+    const [emailErrorMessage, setEmailErrorMessage] = useState('');
+
+    const confirmInputs = () =>{
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+
+        if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+            console.log("Invalid Format");
+            setEmailError(true);
+            setEmailErrorMessage('Please enter a valid email address.');
+            setIsFormValid(false);
+          } else {
+            setEmailError(false);
+            setEmailErrorMessage('');
+          }
+
+    };
+
+
 
     useEffect(() =>{
         if(password === confirmPassword && password != ""){
@@ -134,6 +156,7 @@ function SignUp() {
 
 
      const Submit = () =>{
+        confirmInputs();
         console.log("Button Pressed!");
         if(isFormValid){
             console.log("Successfull sign up")
@@ -164,8 +187,9 @@ function SignUp() {
                         <InputLabel shrink htmlFor="bootstrap-input">
                             Email
                         </InputLabel>
-                        <BootstrapInput id="bootstrap-input"
-                        
+                        <BootstrapInput id="email"
+                        error={emailError}
+                        helperText={emailErrorMessage}
                         value ={email}
                         type="email"
                         required
@@ -180,7 +204,7 @@ function SignUp() {
                         <InputLabel shrink htmlFor="bootstrap-input">
                             Password
                         </InputLabel>
-                        <BootstrapInput id="bootstrap-input"
+                        <BootstrapInput id="password"
                         //value={password}
                         type = "password"
                         required
@@ -192,7 +216,7 @@ function SignUp() {
                         <InputLabel shrink htmlFor="bootstrap-input">
                             Confirm Password
                         </InputLabel>
-                        <BootstrapInput id="bootstrap-input"
+                        <BootstrapInput id="confirmPassword"
                         value={confirmPassword}
                         type = "password"
                         required
