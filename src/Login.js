@@ -124,6 +124,8 @@ function Login() {
     const [passwordError, setPasswordError] = useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
 
+    const [disableButton, setdisableButton] = useState(false);
+
     const confirmInputs = () =>{
         const email = document.getElementById('email');
         const password = document.getElementById('password');
@@ -159,6 +161,7 @@ function Login() {
         const isValidForm = confirmInputs();
         console.log("Button Pressed!");
         if(isValidForm){
+            setdisableButton(true);
             console.log("Successfull sign up")
             signInUser(email, password);
         }
@@ -218,7 +221,9 @@ function Login() {
                         //type="submit"
                         fullWidth
                         variant="contained"
+                        disabled={disableButton}
                         onClick={Submit}
+
                         
                     //onClick={validateInputs}
                     >
