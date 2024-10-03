@@ -6,7 +6,9 @@ import Button from '@mui/material/Button';
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
-
+import { signInUser } from "./server";
+import { useState } from "react";
+import useFetch from "./server";
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -30,7 +32,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
     
 }));
 
-const BootstrapInput = styled(InputBase)(({ theme }) => ({
+const BootstrapInput = styled(TextField)(({ theme }) => ({
     'label + &': {
         marginTop: theme.spacing(3),
     },
@@ -111,6 +113,60 @@ const ButtonI = styled(Button)(({ theme }) => ({
 
 
 function Login() {
+    useFetch();
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const [emailError, setEmailError] = useState(false);
+    const [emailErrorMessage, setEmailErrorMessage] = useState('');
+
+    const [passwordError, setPasswordError] = useState(false);
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+
+    const confirmInputs = () =>{
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+
+        let isValidForm = true;
+
+        if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+            console.log("Invalid Format");
+            setEmailError(true);
+            setEmailErrorMessage('Please enter a valid email address.');
+            isValidForm = false;
+          } else {
+            setEmailError(false);
+            setEmailErrorMessage('');
+          }
+
+          if(password == ""){
+            console.log("password issue");
+            setPasswordError(true);
+            setPasswordErrorMessage('Enter Password!');
+            isValidForm = false;
+          }
+          else {
+            setPasswordError(false);
+            setPasswordErrorMessage('');
+          }    
+          
+          return isValidForm;
+    };
+
+     const Submit = () =>{
+        const isValidForm = confirmInputs();
+        console.log("Button Pressed!");
+        if(isValidForm){
+            console.log("Successfull sign up")
+            signInUser(email, password);
+        }
+        else{
+            console.log("Error signing up" + isValidForm);
+        }
+     }
+    
     return (
         <div className="Login">
             <Card variant="" >
@@ -130,13 +186,15 @@ function Login() {
                         <InputLabel shrink htmlFor="bootstrap-input">
                             Email
                         </InputLabel>
-                        <BootstrapInput id="bootstrap-input"
-                        
-                        type="email"
-                        required
-                        autoComplete="email"
-                        autoFocus
-                        
+                        <BootstrapInput id="email"
+                         error={emailError}
+                         helperText={emailErrorMessage}
+                         value ={email}
+                         type="email"
+                         required
+                         autoComplete="email"
+                         autoFocus
+                         onChange={(e) => setEmail(e.target.value)}
                         />
                     </FormControl>
 
@@ -145,17 +203,22 @@ function Login() {
                         <InputLabel shrink htmlFor="bootstrap-input">
                             Password
                         </InputLabel>
-                        <BootstrapInput id="bootstrap-input"
+                        <BootstrapInput id="password"
+                        value={password}
+                        error={passwordError}
+                        helperText={passwordErrorMessage}
                         type = "password"
                         required
+                        onChange={(e) => setPassword(e.target.value)}
                         />
                     </FormControl>
 
 
                     <ButtonS
-                        type="submit"
+                        //type="submit"
                         fullWidth
                         variant="contained"
+                        onClick={Submit}
                         
                     //onClick={validateInputs}
                     >

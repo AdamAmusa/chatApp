@@ -158,6 +158,8 @@ function SignUp() {
             setPasswordError(false);
             setPasswordErrorMessage('');
           }
+
+          
     };
 
 
