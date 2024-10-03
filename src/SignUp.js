@@ -124,13 +124,19 @@ function SignUp() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
+
     const [emailError, setEmailError] = useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
+
+    const [passwordError, setPasswordError] = useState(false);
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
 
     const confirmInputs = () =>{
         const email = document.getElementById('email');
         const password = document.getElementById('password');
         const confirmPassword = document.getElementById('confirmPassword');
+
+        setIsFormValid(true);
 
         if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
             console.log("Invalid Format");
@@ -142,6 +148,16 @@ function SignUp() {
             setEmailErrorMessage('');
           }
 
+          if(password !== confirmPassword){
+            console.log("Passwords are not the same!");
+            setPasswordError(true);
+            setPasswordErrorMessage('Passwords must be the same');
+            setIsFormValid(false);
+          }
+          else {
+            setPasswordError(false);
+            setPasswordErrorMessage('');
+          }
     };
 
 
@@ -205,7 +221,9 @@ function SignUp() {
                             Password
                         </InputLabel>
                         <BootstrapInput id="password"
-                        //value={password}
+                        value={password}
+                        error={passwordError}
+                        helperText={passwordErrorMessage}
                         type = "password"
                         required
                         onChange={(e) => setPassword(e.target.value)}
@@ -218,6 +236,8 @@ function SignUp() {
                         </InputLabel>
                         <BootstrapInput id="confirmPassword"
                         value={confirmPassword}
+                        error={passwordError}
+                        helperText={passwordErrorMessage}
                         type = "password"
                         required
                         onChange={(e) => setConfirmPassword(e.target.value)}
