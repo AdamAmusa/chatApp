@@ -127,7 +127,7 @@ function Login() {
     const confirmInputs = () =>{
         const email = document.getElementById('email');
         const password = document.getElementById('password');
-        const confirmPassword = document.getElementById('confirmPassword');
+        
 
         let isValidForm = true;
 

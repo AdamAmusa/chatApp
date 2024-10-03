@@ -116,6 +116,8 @@ const ButtonI = styled(Button)(({ theme }) => ({
     ]
 }));
 
+let validForm = false;
+
 
 function SignUp() {
     useFetch();
@@ -123,7 +125,7 @@ function SignUp() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [isFormValid, setIsFormValid] = useState(false);
+
 
     const [emailError, setEmailError] = useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
@@ -133,50 +135,48 @@ function SignUp() {
 
     const confirmInputs = () =>{
         const email = document.getElementById('email');
-        const password = document.getElementById('password');
-        const confirmPassword = document.getElementById('confirmPassword');
 
-        setIsFormValid(true);
+        let isValidForm = true;
 
+        
         if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
             console.log("Invalid Format");
             setEmailError(true);
             setEmailErrorMessage('Please enter a valid email address.');
-            setIsFormValid(false);
+            isValidForm = false;
           } else {
             setEmailError(false);
             setEmailErrorMessage('');
           }
 
           if(password !== confirmPassword){
-            console.log("Passwords are not the same!");
+            console.log("Passwords are not the same!" + password.value + "  "+  confirmPassword.value);
             setPasswordError(true);
             setPasswordErrorMessage('Passwords must be the same');
-            setIsFormValid(false);
+            isValidForm = false;
           }
           else {
             setPasswordError(false);
             setPasswordErrorMessage('');
           }
 
-          
+          return isValidForm;
     };
 
 
 
     useEffect(() =>{
         if(password === confirmPassword && password != ""){
-            setIsFormValid(true)
+            validForm = true;
         } else{
-            setIsFormValid(false);
-        }
+            validForm = false;        }
      }, [email, password, confirmPassword]);
 
 
      const Submit = () =>{
-        confirmInputs();
+        validForm = confirmInputs();
         console.log("Button Pressed!");
-        if(isFormValid){
+        if(validForm){
             console.log("Successfull sign up")
             signUpUser(email, password);
         }
