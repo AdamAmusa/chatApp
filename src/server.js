@@ -29,21 +29,29 @@ const app = initializeApp(firebaseConfig);  // Initialize the Firebase app
 const auth = getAuth(app);                  // Initialize Firebase Authentication
 
 
-export const signUpUser = (email, password) =>{
-createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed up 
-    const user = userCredential.user;
-    // ...
-  })
-  .catch((error) => {
-    return {
-        success: false,
-        errorCode: error.code,
-        errorMessage: error.message,
-    };
-  });
-}
+export const signUpUser = async(email, password) =>{
+    try{
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+        // Get the signed-in user information
+        const user = userCredential.user;
+
+        // Return success and user info
+        return {
+            success: true,
+            user: user,
+        };
+
+    } catch (error) {
+        console.log(error.code);
+        // Return the error details
+        return {
+            success: false,
+            errorCode: error.code,
+            errorMessage: error.message,
+        };
+    }
+};
 
 export const signInUser = async (email, password) =>{
     try{

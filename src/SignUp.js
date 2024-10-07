@@ -175,13 +175,25 @@ function SignUp() {
      }, [email, password, confirmPassword]);
 
 
-     const Submit = () =>{
+     const Submit = async () =>{
         validForm = confirmInputs();
         console.log("Button Pressed!");
         if(validForm){
             setdisableButton(true);
-            console.log("Successfull sign up")
-            signUpUser(email, password);
+            //auth-weak-password
+            //auth/email-already-in-use
+            const response = await signUpUser(email, password);
+            if(response.errorCode === "auth-weak-password"){
+                setPasswordError(true);
+                setPasswordErrorMessage("Weak Password");
+                setdisableButton(false);
+
+            }
+            else if(response.errorCode == "auth/email-already-in-use"){
+                setEmailError(true);
+                setEmailErrorMessage("Account already exists");
+                setdisableButton(false);
+            }
         }
         else{
             console.log("Error signing up");
