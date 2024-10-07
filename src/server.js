@@ -37,42 +37,52 @@ createUserWithEmailAndPassword(auth, email, password)
     // ...
   })
   .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // ..
+    return {
+        success: false,
+        errorCode: error.code,
+        errorMessage: error.message,
+    };
   });
 }
 
-export const signInUser = (email, password) =>{
-    signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in 
-      const user = userCredential.user;
-      // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-    });
-}
+export const signInUser = async (email, password) =>{
+    try{
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
-export const signInGoogle = async () => {
+        // Get the signed-in user information
+        const user = userCredential.user;
+
+        // Return success and user info
+        return {
+            success: true,
+            user: user,
+        };
+
+    } catch (error) {
+        console.log(error.code);
+        // Return the error details
+        return {
+            success: false,
+            errorCode: error.code,
+            errorMessage: error.message,
+        };
+    }
+};
+
+export const usesignInGoogle = async () => {
+    
     const provider = new GoogleAuthProvider();
     try {
         // Await the sign-in process
-        await signInWithPopup(auth, provider);
+        signInWithPopup(auth, provider);
         console.log("User signed in successfully");
 
     } catch (error) {
-        if (error.code === 'auth/cancelled-popup-request') {
-            console.warn('Popup request cancelled:', error);
-        } else {
-            console.error('Error during sign-in:', error);
-        }
-    } finally {
-
+        const errorCode = error.code;
+      const errorMessage = error.message;
     }
 }
+
 
 
 const useFetch = () => {

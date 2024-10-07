@@ -9,7 +9,10 @@ import { GoogleIcon} from './CustomIcons';
 import { signInUser } from "./server";
 import { useState } from "react";
 import useFetch from "./server";
-import { signInGoogle } from "./server";
+import { usesignInGoogle } from "./server";
+
+
+
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -127,6 +130,7 @@ function Login() {
 
     const [disableButton, setdisableButton] = useState(false);
 
+
     const confirmInputs = () =>{
         const email = document.getElementById('email');
         const password = document.getElementById('password');
@@ -158,13 +162,20 @@ function Login() {
           return isValidForm;
     };
 
-     const Submit = () =>{
+     const Submit = async () =>{
         const isValidForm = confirmInputs();
         console.log("Button Pressed!");
         if(isValidForm){
             setdisableButton(true);
-            console.log("Successfull sign up")
-            signInUser(email, password);
+            const response = await signInUser(email, password);
+            console.log(response.errorCode)
+            if (response.errorCode === "auth/invalid-credential"){
+                console.log("Invalid Credentials");
+                setdisableButton(false);
+                setPasswordError(true);
+                setPasswordErrorMessage("Invalid email or password");
+                
+            }
         }
         else{
             console.log("Error signing up" + isValidForm);
@@ -219,7 +230,7 @@ function Login() {
 
 
                     <ButtonS
-                        //type="submit"
+                        type="submit"
                         fullWidth
                         variant="contained"
                         disabled={disableButton}
@@ -251,7 +262,7 @@ function Login() {
                         type="submit"
                         fullWidth
                         variant="outlined"
-                        onClick={signInGoogle}
+                        onClick={usesignInGoogle}
                         startIcon={<GoogleIcon />}
                     >
                         Log in with Google

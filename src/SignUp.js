@@ -9,7 +9,7 @@ import { GoogleIcon, FacebookIcon} from './CustomIcons';
 
 import { useEffect, useState } from "react";
 
-import {signInGoogle, } from "./server";
+import {usesignInGoogle, } from "./server";
 import useFetch from "./server";
 import { signUpUser } from "./server";
 
@@ -267,7 +267,7 @@ function SignUp() {
                         type="submit"
                         fullWidth
                         variant="outlined"
-                        onClick={signInGoogle}
+                        onClick={usesignInGoogle}
                         startIcon={<GoogleIcon />}
                     >
                         Sign up with Google
