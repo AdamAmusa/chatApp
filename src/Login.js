@@ -5,10 +5,11 @@ import MuiCard from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
+import { GoogleIcon} from './CustomIcons';
 import { signInUser } from "./server";
 import { useState } from "react";
 import useFetch from "./server";
+import { signInGoogle } from "./server";
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -93,10 +94,10 @@ const ButtonS = styled(Button)(({ theme }) => ({
 
 const ButtonI = styled(Button)(({ theme }) => ({
     borderRadius: 100,
-    fontSize: 11,
+    fontSize: 15,
     color:"black",
     borderColor:"grey",
-    width: '200px',
+    width: '400px',
     fontFamily: [
         '-apple-system',
         'BlinkMacSystemFont',
@@ -250,19 +251,10 @@ function Login() {
                         type="submit"
                         fullWidth
                         variant="outlined"
-                        onClick={() => alert('Sign in with Google')}
+                        onClick={signInGoogle}
                         startIcon={<GoogleIcon />}
                     >
                         Log in with Google
-                    </ButtonI>
-                    <ButtonI
-                        type="submit"
-                        fullWidth
-                        variant="outlined"
-                        onClick={() => alert('Sign in with Facebook')}
-                        startIcon={<FacebookIcon />}
-                    >
-                        Log in with Facebook
                     </ButtonI>
 
                 </Box>

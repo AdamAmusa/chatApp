@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, FormLabel, TextField, InputLabel, InputBase } from "@mui/material";
+import { FormControl,TextField, InputLabel} from "@mui/material";
 import Box from "@mui/material/Box";
 import { styled,alpha } from '@mui/material/styles';
 import MuiCard from '@mui/material/Card';
@@ -11,8 +11,8 @@ import { useEffect, useState } from "react";
 
 import {signInGoogle, } from "./server";
 import useFetch from "./server";
-
 import { signUpUser } from "./server";
+
 
 
 
@@ -98,10 +98,10 @@ const ButtonS = styled(Button)(({ theme }) => ({
 
 const ButtonI = styled(Button)(({ theme }) => ({
     borderRadius: 100,
-    fontSize: 11,
+    fontSize: 15,
     color:"black",
     borderColor:"grey",
-    width: '200px',
+    width: '420px',
     fontFamily: [
         '-apple-system',
         'BlinkMacSystemFont',
@@ -273,16 +273,6 @@ function SignUp() {
                         Sign up with Google
                         
                     </ButtonI>
-                    <ButtonI
-                        type="submit"
-                        fullWidth
-                        variant="outlined"
-                        onClick={() => alert('Sign in with Facebook')}
-                        startIcon={<FacebookIcon />}
-                    >
-                        Sign up with Facebook
-                    </ButtonI>
-
                 </Box>
             </Card>
 

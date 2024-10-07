@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import 'firebase/firestore';
 import 'firebase/auth'
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";  // Auth and Google provider imports
+import { getAuth, GoogleAuthProvider, signInWithPopup,FacebookAuthProvider, signInWithRedirect } from "firebase/auth";  // Auth and Google provider imports
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 import { useEffect } from "react";
@@ -73,8 +73,6 @@ export const signInGoogle = async () => {
 
     }
 }
-
-
 
 
 const useFetch = () => {
