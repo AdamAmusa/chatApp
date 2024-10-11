@@ -1,36 +1,56 @@
 import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
-import { useSignOut } from './server';
-import { collection, orderBy, limit, addDoc} from 'firebase/firestore';
+import { useSignOut, db } from './server';
+import { collection, orderBy, limit, query as firestoreQuery, onSnapshot } from "firebase/firestore";
+import { useState, useEffect } from 'react';
 
+const messageRef = collection(db, "messages");  // Correctly pass the Firestore instance as the first argument
+const messagesQuery = firestoreQuery(messageRef, orderBy('createdAt'), limit(25));
 
 function ChatPage() {
+    const [messages, setMessages] = useState([]);
+
+    useEffect(() => {
+        const unsub = onSnapshot(messagesQuery, (snapshot) => {
+            const messagesData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),  // Spread the document data
+            }));
+            setMessages(messagesData);  // Update state with the new messages
+        });
+
+        return () => unsub();
+    }, []);
+
     console.log("In chat page");
     const signOut = useSignOut();
 
-    const messageRef = collection("message");
-    const query = messageRef.orderBy('createdAt').limit(25);
-
-    const [messages] = addDoc(query, {idField: 'id'});
-
-
     return (
-    
+
 
         <div>
             <Box sx={{
                 display: "flex",
                 position: "absolute",
                 top: 5,
-                left: 5,    
+                left: 5,
             }}>
                 <Button onClick={signOut} variant="outlined" size="small">Logout</Button>
+              
             </Box>
-            
-            
+
+              <ul style={{color: "black"}}>
+                {messages.map((msg) => (
+                    <li key={msg.id}>
+                        <strong>{msg.id}:</strong>{msg.text}
+                    </li>
+                    
+                ))}
+                
+            </ul>
 
 
-            <h1 style={{color: "black"}} >Chat Page !</h1>
+            <h1 style={{ color: "black" }} >Chat Page !</h1>
         </div>
     );
 }

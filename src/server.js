@@ -4,10 +4,9 @@ import 'firebase/firestore';
 import 'firebase/auth'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { getAuth, GoogleAuthProvider, signInWithPopup,FacebookAuthProvider, signInWithRedirect } from "firebase/auth";  // Auth and Google provider imports
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-
-import { useEffect } from "react";
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import { getFirestore } from "firebase/firestore";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -27,7 +26,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);  // Initialize the Firebase app
 const auth = getAuth(app);                  // Initialize Firebase Authentication
-
+const db = getFirestore(app);
 
 export const signUpUser = async(email, password) =>{
     try{
@@ -124,7 +123,7 @@ export const useSignOut = () => {
 
 }
 
-export default useFetch;
+export { app, auth, db, useFetch} ;
 
 
 

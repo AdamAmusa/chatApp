@@ -10,7 +10,7 @@ import { GoogleIcon, FacebookIcon} from './CustomIcons';
 import { useEffect, useState } from "react";
 
 import {usesignInGoogle, } from "./server";
-import useFetch from "./server";
+import {useFetch} from "./server";
 import { signUpUser } from "./server";
 
 
