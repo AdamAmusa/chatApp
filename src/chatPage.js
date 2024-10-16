@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 import { useSignOut, db } from './server';
 import { collection, orderBy, limit, query as firestoreQuery, onSnapshot } from "firebase/firestore";
 import { useState, useEffect } from 'react';
+import ChatMessage from './chatmessage';
 
 const messageRef = collection(db, "messages");  // Correctly pass the Firestore instance as the first argument
 const messagesQuery = firestoreQuery(messageRef, orderBy('createdAt'), limit(25));
@@ -41,10 +42,7 @@ function ChatPage() {
 
               <ul style={{color: "black"}}>
                 {messages.map((msg) => (
-                    <li key={msg.id}>
-                        <strong>{msg.id}:</strong>{msg.text}
-                    </li>
-                    
+                    <ChatMessage key={msg.id} message={msg}></ChatMessage>                 
                 ))}
                 
             </ul>
@@ -55,4 +53,4 @@ function ChatPage() {
     );
 }
 
-export default ChatPage;
+  export default ChatPage;
