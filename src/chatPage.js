@@ -46,17 +46,24 @@ function ChatPage() {
     return (
 
 
-        <div>
+        <Box>
             <Box sx={{
                 display: "flex",
-                position: "absolute",
+                position: "fixed",
                 top: 5,
                 left: 5,
             }}>
                 <Button onClick={signOut} variant="outlined" size="small">Logout</Button>
-
             </Box>
-            <Box>
+
+
+            {/* Message and input section*/}
+            <Box sx={{
+                position: "relative",
+                left:465,
+                top:5,
+            }}>
+
             {/*messages list*/}
             <main style={{ color: "black" }}>
                 {messages.map((msg) => (
@@ -64,28 +71,26 @@ function ChatPage() {
                 ))}
                 <div ref={autoscroll}></div>
             </main>
+            {/*End of messages list*/}
 
-
-            <form onSubmit={sendMessage}>
-                
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0 }}> {/* Flex container */}
-                <TextField
-                    size="small"
-                    value={formValue}
-                    onChange={(e) => setFormValue(e.target.value)}
-                />
-                <Button
-                    type="submit"
-                    variant="contained"
-                    size="large"
-                    endIcon={<SendIcon />}
-                >
+            <form onSubmit={sendMessage}>      
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0, position: 'relative'}}> {/* Flex container */}
+                <TextField size="small" value={formValue} sx={{ width: '900px'}} onChange={(e) => setFormValue(e.target.value)}/>
+                <Button type="submit" variant="contained" size="small" endIcon={<SendIcon />} sx={{
+                        position: 'absolute',
+                        right: 0,
+                        height:"4.3vh",
+                        top: '50%',
+                        transform: 'translateY(-50%)', // Center the button vertically
+                    }}>Send</Button>    
+            </Box>        
+            </form>        
                     
-                </Button>
-            </Box>
-            </form>
-            </Box>
-        </div>
+            </Box>     
+            {/*End of message and input section */}               
+                 
+                   
+        </Box>
     );
 }
 
