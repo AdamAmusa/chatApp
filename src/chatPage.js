@@ -48,6 +48,15 @@ function ChatPage() {
 
         <Box sx={{position:"relative"}}>
             <Box sx={{
+                position:"fixed",
+                border:'1px solid grey',
+                top:0,
+                left:0,
+                width:"65.5vh",
+                height:"100%"
+                
+            }}>
+            <Box sx={{
                 display: "flex",
                 position: "fixed",
                 top: 5,
@@ -55,18 +64,15 @@ function ChatPage() {
             }}>
                 <Button onClick={signOut} variant="outlined" size="small">Logout</Button>
             </Box>
-
+            </Box>
 
             {/* Message list and input section*/}
-            <Box sx={{
-                position: "relative",
-                left:300,
-                top:5,
-                maxWidth:"100%"
+            <Box component="section" sx={{
+                
             }}>
 
             {/*messages list*/}
-            <main style={{ color: "black" }}>
+            <main style={{ color: "black", paddingBottom:'30px' }} >
                 {messages.map((msg) => (
                     <ChatMessage key={msg.id} message={msg}></ChatMessage>
                 ))}
@@ -76,8 +82,8 @@ function ChatPage() {
 
             <form onSubmit={sendMessage}>      
             {/*Button and Text Section */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0, position: 'relative'}}> {/* Flex container */}
-                <TextField size="small" value={formValue} sx={{ width: '130vh'}} onChange={(e) => setFormValue(e.target.value)}/>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0, position: 'fixed', bottom:0, right:0}}> {/* Flex container */}
+                <TextField size="small" value={formValue} sx={{ width: '135.8vh'}} onChange={(e) => setFormValue(e.target.value)}/>
                 <Button type="submit" variant="contained" size="small" endIcon={<SendIcon />} sx={{
                         position: 'absolute',
                         right: 0,
