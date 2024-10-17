@@ -46,13 +46,13 @@ function ChatPage() {
     return (
 
 
-        <Box sx={{position:"relative"}}>
+        <Box sx={{position:"relative", width:"100%"}}>
             <Box sx={{
                 position:"fixed",
                 border:'1px solid grey',
                 top:0,
                 left:0,
-                width:"65.5vh",
+                width:"33vw",
                 height:"100%"
                 
             }}>
@@ -67,7 +67,12 @@ function ChatPage() {
             </Box>
 
             {/* Message list and input section*/}
-            <Box component="section" sx={{
+            <Box  sx={{
+                position: "relative",
+                overflowY: 'auto',
+                border: '1px solid grey',
+                width:"66vw",
+                marginLeft: "33vw",
                 
             }}>
 
@@ -82,13 +87,13 @@ function ChatPage() {
 
             <form onSubmit={sendMessage}>      
             {/*Button and Text Section */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0, position: 'fixed', bottom:0, right:0}}> {/* Flex container */}
-                <TextField size="small" value={formValue} sx={{ width: '135.8vh'}} onChange={(e) => setFormValue(e.target.value)}/>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0, position: 'fixed', bottom:0, right:0, paddingBottom:'10px'}}> {/* Flex container */}
+                <TextField size="small" value={formValue} sx={{ width: '134vh'}} onChange={(e) => setFormValue(e.target.value)}/>
                 <Button type="submit" variant="contained" size="small" endIcon={<SendIcon />} sx={{
                         position: 'absolute',
                         right: 0,
                         height:"4.29vh",
-                        top: '50%',
+                        top: '39%',
                         transform: 'translateY(-50%)', // Center the button vertically
                     }}>Send</Button>    
             </Box>        
