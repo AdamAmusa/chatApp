@@ -6,7 +6,9 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth";  // Auth and Google provider imports
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { getFirestore } from "firebase/firestore";
+import { getFirestore} from "firebase/firestore";
+import {doc, setDoc } from "firebase/firestore";
+
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -28,12 +30,19 @@ const app = initializeApp(firebaseConfig);  // Initialize the Firebase app
 const auth = getAuth(app);                  // Initialize Firebase Authentication
 const db = getFirestore(app);
 
-export const signUpUser = async(email, password) =>{
+export const signUpUser = async(email, password, displayName) =>{
     try{
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
         // Get the signed-in user information
         const user = userCredential.user;
+
+
+        await setDoc(doc(db, 'users', user.uid),{
+            displayName,
+            email,
+            photoURL: null
+        });
 
         // Return success and user info
         return {

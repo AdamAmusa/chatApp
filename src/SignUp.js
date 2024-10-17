@@ -1,16 +1,16 @@
 import React from "react";
-import { FormControl,TextField, InputLabel} from "@mui/material";
+import { FormControl, TextField, InputLabel } from "@mui/material";
 import Box from "@mui/material/Box";
-import { styled,alpha } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 import MuiCard from '@mui/material/Card';
 import Button from '@mui/material/Button';
 
-import { GoogleIcon, FacebookIcon} from './CustomIcons';
+import { GoogleIcon, FacebookIcon } from './CustomIcons';
 
 import { useEffect, useState } from "react";
 
-import {usesignInGoogle, } from "./server";
-import {useFetch} from "./server";
+import { usesignInGoogle, } from "./server";
+import { useFetch } from "./server";
 import { signUpUser } from "./server";
 
 
@@ -34,7 +34,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
         boxShadow:
             'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
     }),
-    
+
 }));
 
 const BootstrapInput = styled(TextField)(({ theme }) => ({
@@ -55,7 +55,7 @@ const BootstrapInput = styled(TextField)(({ theme }) => ({
             'background-color',
             'box-shadow',
         ]),
-        
+
         // Use the system font instead of the default Roboto font.
         fontFamily: [
             '-apple-system',
@@ -93,14 +93,14 @@ const ButtonS = styled(Button)(({ theme }) => ({
         '"Apple Color Emoji"',
         '"Segoe UI Emoji"',
         '"Segoe UI Symbol"',
-    ] 
+    ]
 }));
 
 const ButtonI = styled(Button)(({ theme }) => ({
     borderRadius: 100,
     fontSize: 15,
-    color:"black",
-    borderColor:"grey",
+    color: "black",
+    borderColor: "grey",
     width: '420px',
     fontFamily: [
         '-apple-system',
@@ -126,80 +126,91 @@ function SignUp() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+    const [name, setName] = useState('');
 
     const [emailError, setEmailError] = useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
+
+    const [nameError, setNameError] = useState(false);
+    const [nameErrorMessage, setNameErrorMessage] = useState(''); 
 
     const [passwordError, setPasswordError] = useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
 
     const [disableButton, setdisableButton] = useState(false);
 
-    const confirmInputs = () =>{
+
+    const confirmInputs = () => {
         const email = document.getElementById('email');
 
         let isValidForm = true;
 
-        
         if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-            console.log("Invalid Format");
             setEmailError(true);
             setEmailErrorMessage('Please enter a valid email address.');
             isValidForm = false;
-          } else {
+        } else {
             setEmailError(false);
             setEmailErrorMessage('');
-          }
+        }
 
-          if(password !== confirmPassword){
-            console.log("Passwords are not the same!" + password.value + "  "+  confirmPassword.value);
+        if (password !== confirmPassword) {
             setPasswordError(true);
             setPasswordErrorMessage('Passwords must be the same');
             isValidForm = false;
-          }
-          else {
+        }
+
+        if(name === ""){
+            isValidForm = false;
+            setdisableButton(true);
+            setNameError(true);
+            setNameErrorMessage("Please enter a username");
+        }
+        else {
             setPasswordError(false);
             setPasswordErrorMessage('');
-          }
+        }
 
-          return isValidForm;
+        return isValidForm;
     };
 
 
 
-    useEffect(() =>{
-        if(password === confirmPassword && password != ""){
+    useEffect(() => {
+        if (password === confirmPassword && password != "") {
             validForm = true;
-        } else{
-            validForm = false;        }
-     }, [email, password, confirmPassword]);
+        } else {
+            validForm = false;
+        }
+    }, [email, password, confirmPassword]);
 
 
-     const Submit = async () =>{
+    const Submit = async () => {
         validForm = confirmInputs();
         console.log("Button Pressed!");
-        if(validForm){
+        if (validForm) {
             setdisableButton(true);
             //auth-weak-password
             //auth/email-already-in-use
-            const response = await signUpUser(email, password);
-            if(response.errorCode === "auth-weak-password"){
+            const response = await signUpUser(email, password, name);
+            if (response.errorCode === "auth-weak-password") {
                 setPasswordError(true);
                 setPasswordErrorMessage("Weak Password");
                 setdisableButton(false);
 
             }
-            else if(response.errorCode == "auth/email-already-in-use"){
+            else if (response.errorCode == "auth/email-already-in-use") {
                 setEmailError(true);
                 setEmailErrorMessage("Account already exists");
                 setdisableButton(false);
             }
         }
-        else{
+        else {
             console.log("Error signing up");
+            setdisableButton(false);
         }
-     }
-    
+    }
+
 
     return (
         <div className="Login">
@@ -216,19 +227,32 @@ function SignUp() {
                         gap: 2,
                     }}
                 >
+
+                    <FormControl variant="standard">
+                        <InputLabel shrink htmlFor="bootstrap-input">
+                            Name
+                        </InputLabel>
+                        <BootstrapInput id="name"
+                            error={nameError}
+                            helperText={nameErrorMessage}
+                            required
+                            autoFocus
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                    </FormControl>
+
                     <FormControl variant="standard">
                         <InputLabel shrink htmlFor="bootstrap-input">
                             Email
                         </InputLabel>
                         <BootstrapInput id="email"
-                        error={emailError}
-                        helperText={emailErrorMessage}
-                        value ={email}
-                        type="email"
-                        required
-                        autoComplete="email"
-                        autoFocus
-                        onChange={(e) => setEmail(e.target.value)}
+                            error={emailError}
+                            helperText={emailErrorMessage}
+                            value={email}
+                            type="email"
+                            required
+                            autoComplete="email"
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </FormControl>
 
@@ -238,12 +262,12 @@ function SignUp() {
                             Password
                         </InputLabel>
                         <BootstrapInput id="password"
-                        value={password}
-                        error={passwordError}
-                        helperText={passwordErrorMessage}
-                        type = "password"
-                        required
-                        onChange={(e) => setPassword(e.target.value)}
+                            value={password}
+                            error={passwordError}
+                            helperText={passwordErrorMessage}
+                            type="password"
+                            required
+                            onChange={(e) => setPassword(e.target.value)}
                         />
                     </FormControl>
 
@@ -252,12 +276,12 @@ function SignUp() {
                             Confirm Password
                         </InputLabel>
                         <BootstrapInput id="confirmPassword"
-                        value={confirmPassword}
-                        error={passwordError}
-                        helperText={passwordErrorMessage}
-                        type = "password"
-                        required
-                        onChange={(e) => setConfirmPassword(e.target.value)}
+                            value={confirmPassword}
+                            error={passwordError}
+                            helperText={passwordErrorMessage}
+                            type="password"
+                            required
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                     </FormControl>
 
@@ -273,7 +297,7 @@ function SignUp() {
                         Sign up
                     </ButtonS>
                 </Box>
-                
+
                 <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
                     <ButtonI
                         type="submit"
@@ -283,7 +307,7 @@ function SignUp() {
                         startIcon={<GoogleIcon />}
                     >
                         Sign up with Google
-                        
+
                     </ButtonI>
                 </Box>
             </Card>
