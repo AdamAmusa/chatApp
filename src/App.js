@@ -3,8 +3,14 @@ import Login from './Login';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignUp from './SignUp';
 import ChatPage from './chatPage';
+import { AuthContext } from './context';
+import { useContext } from 'react';
+
 
 function App() {
+
+  const {currentUser} = useContext(AuthContext);
+  console.log(currentUser);
   return (
     <div className="App">
       <header className="App-header">
