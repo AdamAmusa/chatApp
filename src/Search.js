@@ -1,6 +1,6 @@
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDoc, getDocs ,doc, setDoc, serverTimestamp, updateDoc} from 'firebase/firestore';
 import { Box, ListItem, ListItemText } from '@mui/material';
 import { useContext, useState } from 'react';
 import { db } from './server';
@@ -15,7 +15,7 @@ const Search = () => {
     const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
 
-    const [currentUser] = useContext(AuthContext);
+    const {currentUser} = useContext(AuthContext);
 
 
     const submitKey = (e) => {
@@ -27,10 +27,38 @@ const Search = () => {
         //check if the user is already in the chat, if not add them
         //if they are, then do nothing
         const combinedID = currentUser.uid > user.uid
-             ? currentUser.uid + user.uid
-             : user.uid + currentUser.uid;
-        const res = await getDocs(query(collection(db, "messages", combinedID)));
-    }
+            ? currentUser.uid + user.uid
+            : user.uid + currentUser.uid;
+        try {
+            const res = await getDoc(doc(db, "messages", combinedID));
+            if (!res.exists()) {
+                //create a new chat
+                await setDoc(doc(db, "messages", combinedID), { messages: [] });
+
+
+                await updateDoc(doc, "userChats", currentUser.uid, {
+                    [combinedID +".userInfo"]:{
+                        uid: user.uid,
+                        displayName: user.displayName,
+                        photoUrl: null 
+                    },
+                    [combinedID +".date"]: serverTimestamp()
+                });
+
+                await updateDoc(doc, "userChats", user.uid, {
+                    [combinedID +".userInfo"]:{
+                        uid: currentUser.uid,
+                        displayName: currentUser.displayName,
+                        photoUrl: null 
+                    },
+                    [combinedID +".date"]: serverTimestamp()
+                });
+            }
+
+        } catch (e) { }
+
+
+    };
 
     const handleSearch = async () => {
 
