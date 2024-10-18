@@ -7,6 +7,7 @@ import ChatMessage from './chatmessage';
 import { auth } from './server';
 import SendIcon from '@mui/icons-material/Send';
 import TextField from '@mui/material/TextField';
+import SearchIcon from '@mui/icons-material/Search';
 
 const messageRef = collection(db, "messages");  // Correctly pass the Firestore instance as the first argument
 const messagesQuery = firestoreQuery(messageRef, orderBy('createdAt'), limit(25));
@@ -42,7 +43,7 @@ function ChatPage() {
         return () => unsub();
     }, []);
 
-    const signOut = useSignOut();
+   
     return (
 
 
@@ -56,6 +57,9 @@ function ChatPage() {
                 height:"100%"
                 
             }}>
+            
+
+            {/*Sign Out Button */}
             <Box sx={{
                 display: "flex",
                 position: "fixed",
@@ -64,6 +68,15 @@ function ChatPage() {
             }}>
                 <Button onClick={signOut} variant="outlined" size="small">Logout</Button>
             </Box>
+
+            {/*Search Bar */}
+            
+            <TextField sx={{top:60, width:'30ch', color:'primary'}} label="Enter email" size="small" id="fullWidth" inputProps={{
+            style: { backgroundColor: 'darkgrey'}}}/> 
+            <SearchIcon sx={{position:"fixed", color:"black", top:70, left:"40ch"}} /> {/* Adjust position as needed */}
+
+            
+
             </Box>
 
             {/* Message list and input section*/}
