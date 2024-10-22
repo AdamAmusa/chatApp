@@ -34,8 +34,9 @@ const Search = () => {
             : user.uid + currentUser.uid;
             setChatId(combinedID);
         try { 
-            console.log("Clicked!"+ currentUser.displayName);
-            const res = await getDocs(doc(db, "messages", combinedID));
+            
+            const res = await getDoc(doc(db, "messages", combinedID));
+            console.log("Clicked!"+ res.exists());
             if (!res.exists()) {
                
                 //create a new chat
