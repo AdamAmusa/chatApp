@@ -4,34 +4,36 @@ import { useSignOut, db } from './server';
 import { collection, orderBy, limit, query as firestoreQuery, onSnapshot, addDoc, serverTimestamp } from "firebase/firestore";
 import { useState, useEffect, useRef } from 'react';
 import ChatMessage from './chatmessage';
-import { auth } from './server';
 import SendIcon from '@mui/icons-material/Send';
 import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
 import Search from './Search';
+import { AuthContext } from './context';
+import { useContext } from 'react';
 
-const messageRef = collection(db, "messages");  // Correctly pass the Firestore instance as the first argument
-const messagesQuery = firestoreQuery(messageRef, orderBy('createdAt'), limit(25));
 
 function ChatPage() {
     const [messages, setMessages] = useState([]);
     const [formValue, setFormValue] = useState('');
     const autoscroll = useRef();
+    const {currentUser} = useContext(AuthContext);
 
-    const sendMessage = async (e) => {
+    const messageRef = collection(db, "messages");  // Correctly pass the Firestore instance as the first argument
+    const messagesQuery = firestoreQuery(messageRef, orderBy('createdAt'), limit(25));
+
+    
+    /*const sendMessage = async (e) => {
         e.preventDefault();
-
-        const { uid } = auth.currentUser;
 
         await addDoc(messageRef, {
             text: formValue,
             createdAt: serverTimestamp(),
-            uid
+            uid: currentUser.uid
         })
         setFormValue('');
 
         autoscroll.current.scrollIntoView({ behavior: 'smooth' });
-    }
+    }*/
+
     useEffect(() => {
         const unsub = onSnapshot(messagesQuery, (snapshot) => {
             const messagesData = snapshot.docs.map(doc => ({
@@ -40,9 +42,9 @@ function ChatPage() {
             }));
             setMessages(messagesData);  // Update state with the latest data from firestore
         });
-
+        
         return () => unsub();
-    }, []);
+    }, [currentUser.uid]);
 
     const signOut = useSignOut();
     return (
@@ -78,7 +80,7 @@ function ChatPage() {
             <Box  sx={{
                 position: "relative",
                 overflowY: 'auto',
-                border: '1px solid grey',
+                border: '',
                 width:"66vw",
                 marginLeft: "33vw",
                 
@@ -93,7 +95,8 @@ function ChatPage() {
             </main>
             {/*End of messages list*/}
 
-            <form onSubmit={sendMessage}>      
+           <form>{/*onSubmit={sendMessage}*/}
+
             {/*Button and Text Section */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0, position: 'fixed', bottom:0, right:0, paddingBottom:'10px'}}> {/* Flex container */}
                 <TextField size="small" value={formValue} sx={{ width: '134vh'}} onChange={(e) => setFormValue(e.target.value)}/>

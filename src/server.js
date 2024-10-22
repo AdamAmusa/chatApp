@@ -4,10 +4,10 @@ import 'firebase/firestore';
 import 'firebase/auth'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth";  // Auth and Google provider imports
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";import { useEffect } from "react";
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { getFirestore} from "firebase/firestore";
-import {doc, setDoc } from "firebase/firestore";
+import { getFirestore,doc, setDoc} from "firebase/firestore";
+import { } from "firebase/firestore";
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -30,6 +30,8 @@ const app = initializeApp(firebaseConfig);  // Initialize the Firebase app
 const auth = getAuth(app);                  // Initialize Firebase Authentication
 const db = getFirestore(app);
 
+
+
 export const signUpUser = async(email, password, displayName) =>{
     try{
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -37,6 +39,7 @@ export const signUpUser = async(email, password, displayName) =>{
         // Get the signed-in user information
         const user = userCredential.user;
 
+        await updateProfile(user, { displayName });
 
         await setDoc(doc(db, 'users', user.uid),{
             uid: user.uid,
@@ -44,6 +47,8 @@ export const signUpUser = async(email, password, displayName) =>{
             email,
             photoURL: null
         });
+
+        await setDoc(doc(db, 'userChats', user.uid),{});
 
         // Return success and user info
         return {

@@ -10,10 +10,12 @@ import { AuthContext } from './context';
 
 
 
+
 const Search = () => {
     const [email, setEmail] = useState('');
     const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
+    const [chatId, setChatId] = useState(null); 
 
     const {currentUser} = useContext(AuthContext);
 
@@ -24,19 +26,24 @@ const Search = () => {
     }
 
     const handleSelect = async () => {
+        
         //check if the user is already in the chat, if not add them
         //if they are, then do nothing
         const combinedID = currentUser.uid > user.uid
             ? currentUser.uid + user.uid
             : user.uid + currentUser.uid;
-        try {
-            const res = await getDoc(doc(db, "messages", combinedID));
+            setChatId(combinedID);
+        try { 
+            console.log("Clicked!"+ currentUser.displayName);
+            const res = await getDocs(doc(db, "messages", combinedID));
             if (!res.exists()) {
+               
                 //create a new chat
                 await setDoc(doc(db, "messages", combinedID), { messages: [] });
 
 
-                await updateDoc(doc, "userChats", currentUser.uid, {
+                console.log("Updating userChats for currentUser...");
+                await updateDoc(doc(db, "userChats", currentUser.uid), {
                     [combinedID +".userInfo"]:{
                         uid: user.uid,
                         displayName: user.displayName,
@@ -45,7 +52,7 @@ const Search = () => {
                     [combinedID +".date"]: serverTimestamp()
                 });
 
-                await updateDoc(doc, "userChats", user.uid, {
+                await updateDoc(doc(db, "userChats", user.uid), {
                     [combinedID +".userInfo"]:{
                         uid: currentUser.uid,
                         displayName: currentUser.displayName,
