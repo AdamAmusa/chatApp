@@ -36,7 +36,7 @@ const Search = () => {
         try { 
             
             const res = await getDoc(doc(db, "messages", combinedID));
-            console.log("Clicked!"+ res.exists());
+            
             if (!res.exists()) {
                
                 //create a new chat

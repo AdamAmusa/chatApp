@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import Search from './Search';
 import { AuthContext } from './context';
 import { useContext } from 'react';
+import ChatList from './chatList';
 
 
 function ChatPage() {
@@ -74,6 +75,7 @@ function ChatPage() {
 
             {/*Search Bar */}       
             <Search></Search>
+            <ChatList></ChatList>
             </Box>
 
             {/* Message list and input section*/}
