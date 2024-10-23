@@ -1,16 +1,30 @@
-import { auth } from "./server";
+import Message from "./Message";
+import { useContext, useEffect } from "react";
+
+import { ChatContext } from "./ChatContext";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "./server";
 
 function ChatMessage(props) {
-    const { text, uid } = props.message;
+    const { data } = useContext(ChatContext);
+    const { messages, setMessages } = useContext(ChatContext);
 
-    const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
+    useEffect(() => {
+        const unsub = onSnapshot(doc(db, "messages", data.chatId), (snapshot) => {
+            snapshot.exists() && setMessages(snapshot.data().messages);
+        });
+        return () => unsub();
+    }, [data.chatId]);
+
     return (
-        <div className={`message ${messageClass}`}>
-             <p>{text}</p>
-        </div>
-       
-    )
+        <div>
+            {messages.map((msg) => (
+                <Message message={msg}/>
+            ))}
 
+        </div>
+
+    )
 }
 
 

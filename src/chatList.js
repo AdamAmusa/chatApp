@@ -4,11 +4,13 @@ import { useContext, useState, useEffect } from 'react';
 import { onSnapshot, doc } from 'firebase/firestore';
 import { AuthContext } from './context';
 import { db } from './server';
+import { ChatContext } from './ChatContext';
 
 const ChatList = () => {
 
     const [chatList, setchatList] = useState([]);
     const { currentUser } = useContext(AuthContext);
+    const {dispatch} = useContext(ChatContext);
 
     useEffect(() => {
         const getChats = () => {
@@ -20,6 +22,9 @@ const ChatList = () => {
         currentUser.uid && getChats();
     }, [currentUser.uid]);
 
+    const handleSelect =(u)=>{
+        dispatch({type:"CHANGE_USER", payload:u});
+    }
 
 
     console.log(Object.entries(chatList));
@@ -28,11 +33,11 @@ const ChatList = () => {
             
             <List sx={{ width: "100%", top: 80 }}>
                 {Object.entries(chatList)?.map((chat) => (
-                    <ListItemButton>
-                <ListItem key={chat[0]}>
-                    <Box sx={{ display: "flex", alignItems: "center"}}>
+                    <ListItemButton onClick={() => handleSelect(chat[1].userInfo)}>
+                <ListItem disablePadding key={chat[0]}>
+                    <Box sx={{ display: "flex", alignItems: "center", width:"100%"}}>
                         <AccountCircleIcon sx={{fontSize: "8vh", color:"white"}} />
-                        <p style={{color:'black',  marginLeft: "18px", fontSize:"23px"}}>{chat[1].userInfo.displayName}</p>
+                        <p style={{color:'white',  marginLeft: "18px", fontSize:"23px"}}>{chat[1].userInfo.displayName}</p>
                     </Box>
                     
                 </ListItem>

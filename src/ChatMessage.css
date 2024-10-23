@@ -1,0 +1,11 @@
+.sent {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+.received {
+    background-color: #ffffff;
+    align-self: flex-start;
+    margin-right: auto;
+}
