@@ -1,27 +1,19 @@
 import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
 import { useSignOut, db } from './server';
-import { collection, orderBy, limit, query as firestoreQuery, onSnapshot, addDoc, serverTimestamp } from "firebase/firestore";
 import { useState, useEffect, useRef } from 'react';
-import ChatMessage from './chatmessage';
-import SendIcon from '@mui/icons-material/Send';
-import TextField from '@mui/material/TextField';
 import Search from './Search';
 import { AuthContext } from './context';
 import { useContext } from 'react';
 import ChatList from './chatList';
 import Input from './Input';
+import { ChatContext } from './ChatContext';
+import Messages from './Messages';
 
 
 function ChatPage() {
-    const [messages, setMessages] = useState([]);
-
     const autoscroll = useRef();
-    const { currentUser } = useContext(AuthContext);
-
-    const messageRef = collection(db, "messages");  // Correctly pass the Firestore instance as the first argument
-    const messagesQuery = firestoreQuery(messageRef, orderBy('createdAt'), limit(25));
-
+    const { data } = useContext(ChatContext);
 
     const signOut = useSignOut();
     return (
@@ -67,10 +59,11 @@ function ChatPage() {
 
                 {/*messages list*/}
                 <main style={{ color: "black", paddingBottom: '30px' }} >
-                    {messages.map((msg) => (
-                        <ChatMessage key={msg.id} message={msg}></ChatMessage>
-                    ))}
-                    <div ref={autoscroll}></div>
+
+                    
+                            <Messages />
+                            <div ref={autoscroll}></div>
+                    
                 </main>
                 {/*End of messages list*/}
 

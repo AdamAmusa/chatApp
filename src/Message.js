@@ -7,11 +7,16 @@ const Message = ({chats}) =>{
     const {currentUser} = useContext(AuthContext);
     const {data} = useContext(ChatContext)
     const messageClass = data.uid === currentUser.uid ? 'sent' : 'received';
+
+
+    if (!chats) {
+        return <p>No messages to display.</p>;
+    }
 return(
 <div>
 {Object.entries(chats)?.map((chat) => (
      <div className={`message ${messageClass}`}>
-    <p>{chat[1].message}</p>
+    <p>{chat.formValue}</p>
     </div>
 ))};
 
