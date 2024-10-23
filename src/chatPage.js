@@ -58,7 +58,8 @@ function ChatPage() {
                 top:0,
                 left:0,
                 width:"33vw",
-                height:"100%"
+                height:"100%",
+                backgroundColor: "#424549"
                 
             }}>
             

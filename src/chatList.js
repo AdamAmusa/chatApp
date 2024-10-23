@@ -1,5 +1,5 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Box, List, ListItem, ListItemText } from '@mui/material';
+import { Box, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useContext, useState, useEffect } from 'react';
 import { onSnapshot, doc } from 'firebase/firestore';
 import { AuthContext } from './context';
@@ -28,12 +28,15 @@ const ChatList = () => {
             
             <List sx={{ width: "100%", top: 80 }}>
                 {Object.entries(chatList)?.map((chat) => (
+                    <ListItemButton>
                 <ListItem key={chat[0]}>
-                    <Box sx={{ display: "flex", color: "black"}}>
-                        <AccountCircleIcon />
-                        <p sx={{color:"black"}}>{chat[1].userInfo.displayName}</p>
+                    <Box sx={{ display: "flex", alignItems: "center"}}>
+                        <AccountCircleIcon sx={{fontSize: "8vh", color:"white"}} />
+                        <p style={{color:'black',  marginLeft: "18px", fontSize:"23px"}}>{chat[1].userInfo.displayName}</p>
                     </Box>
+                    
                 </ListItem>
+                </ListItemButton>
             ))}
             </List>
             
