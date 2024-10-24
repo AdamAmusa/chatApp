@@ -6,6 +6,7 @@
     width: 100%; /* Ensure it takes the full width of the parent */
     position: relative; /* Ensure the container is positioned relative */
     box-sizing: border-box;
+    width: 100%;
 }
 
 .sent {
@@ -19,7 +20,7 @@
 .received {
     background-color: #57595c;
     align-self: flex-start;
-    margin-left: 0;
+    margin-left: 1;
     margin-right: auto;
     position: relative;
     left: 0; /* Align to the complete left of the screen */
@@ -31,6 +32,8 @@
     padding: 10px; /* Adjusted padding */
     border-radius: 10px;
     word-wrap: break-word;
+    
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
 }

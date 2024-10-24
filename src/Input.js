@@ -1,6 +1,6 @@
 import { Box, TextField, Button } from "@mui/material"
 import SendIcon from '@mui/icons-material/Send';
-import { useContext, useState } from "react";
+import { useContext, useState, useRef } from "react";
 import { arrayUnion, doc, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "./server";
 import { ChatContext } from "./ChatContext";
@@ -9,12 +9,12 @@ import { AuthContext } from "./context";
 
 
 
-
 const Input = () => {
     const [formValue, setFormValue] = useState('');
     const { data } = useContext(ChatContext);
     const { currentUser } = useContext(AuthContext);
 
+    const autoscroll = useRef();
 
     const sendMessage = async (e) => {
         e.preventDefault();
@@ -44,11 +44,12 @@ const Input = () => {
         })
 
         setFormValue('');
+        autoscroll.current.scrollIntoView({ behavior: "smooth" });
     };
 
 
     return (
-       
+       <div>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0, position: 'fixed', bottom: 0, right: 0, paddingBottom: '10px' }}> {/* Flex container */}
          <form onSubmit={(e) => sendMessage(e)}>
             {/*Button and Text Section */}
@@ -62,6 +63,8 @@ const Input = () => {
             }}>Send</Button>
             </form>
         </Box>
+        <div ref={autoscroll}></div>
+        </div>
     )
 }
 export default Input;

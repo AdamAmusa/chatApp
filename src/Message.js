@@ -9,7 +9,7 @@ const Message = ({ message }) => { // Corrected destructuring
     const { data } = useContext(ChatContext);
 
     
-    const messageClass = message?.senderId === currentUser?.uid ? 'received' : 'sent';
+    const messageClass = message?.senderId === currentUser?.uid ? 'sent' : 'received';
     console.log("Sent by ", data?.user.uid, typeof data?.user.uid); // Log the message prop
     console.log("Recieved by " + currentUser?.uid, typeof data?.user.uid); // Log the message prop
     console.log(messageClass)
