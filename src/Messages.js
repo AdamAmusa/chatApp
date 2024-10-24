@@ -5,26 +5,26 @@ import { ChatContext } from "./ChatContext";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "./server";
 
-const Messages = ()=> {
+const Messages = () => {
     const { data } = useContext(ChatContext);
-    const [ messages, setMessages ] = useState([]);
+    const [messages, setMessages] = useState([]);
 
 
-  useEffect(() => {
-    if (data && data.chatId) {
-        console.log("Pressed" + data.chatId);
-        const unsub = onSnapshot(doc(db, "messages", data.chatId), (snapshot) => {
-            if(snapshot.exists()){
-            const messagesData = snapshot.data().messages;
-            setMessages(messagesData);
-            console.log("Messages" + messages[0].message);
+    useEffect(() => {
+        if (data && data.chatId) {
+            console.log("Pressed" + data.chatId);
+            const unsub = onSnapshot(doc(db, "messages", data.chatId), (snapshot) => {
+                if (snapshot.exists()) {
+                    const messagesData = snapshot.data().messages;
+                    setMessages(messagesData);
+                    console.log("Messages" + messages[0].message);
+                }
+
+            });
+            return () => {
+                unsub();
             }
-            
-        });
-        return () => {
-            unsub();
         }
-    }
     }, [data.chatId]);
 
     if (!data || !data.chatId) {
@@ -33,9 +33,9 @@ const Messages = ()=> {
 
     return (
         <div>
-    
-            {messages.map((msg) => (
-               <Message message={msg}/> 
+
+            {messages?.map((msg, index) => (
+                <Message key={index} message={msg} /> // Added unique key
             ))}
 
         </div>

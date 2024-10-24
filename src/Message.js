@@ -1,31 +1,26 @@
 import { useContext } from "react";
 import { ChatContext } from "./ChatContext";
 import { AuthContext } from "./context";
+import "./ChatMessage.css";
 
-const Message = ({ chats }) => {
+const Message = ({ message }) => { // Corrected destructuring
 
     const { currentUser } = useContext(AuthContext);
-    const { data } = useContext(ChatContext)
-    const messageClass = data.uid === currentUser.uid ? 'sent' : 'received';
+    const { data } = useContext(ChatContext);
+    const messageClass = data?.uid === currentUser?.uid ? 'sent' : 'received';
+    console.log("Message component: ", message); // Log the message prop
 
+    console.log("Sender: ", message); // Log the message prop
 
-    if (!chats) {
-        return <p>No messages to display.</p>;
+    if (!message) {
+        return <p>No message to display.</p>;
     }
+
     return (
-        <div>
-            {Object.entries(chats)?.map((chat) => (
-                <div className={`message ${messageClass}`}>
-                    <p>{chat.message}</p>
-                </div>
-            ))};
-
+        <div className={`message ${messageClass}`}>
+            <p>{message?.message}</p> {/* Adjust this line based on your message structure */}
         </div>
-
-
-
     );
-}
-
+};
 
 export default Message;
