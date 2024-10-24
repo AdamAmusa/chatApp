@@ -17,7 +17,6 @@ const Messages = () => {
                 if (snapshot.exists()) {
                     const messagesData = snapshot.data().messages;
                     setMessages(messagesData);
-                    console.log("Messages" + messages[0].message);
                 }
 
             });
@@ -32,7 +31,7 @@ const Messages = () => {
     }
 
     return (
-        <div>
+        <div className="chat-container">
 
             {messages?.map((msg, index) => (
                 <Message key={index} message={msg} /> // Added unique key

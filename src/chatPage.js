@@ -1,25 +1,18 @@
-import { Box } from '@mui/material';
-import Button from '@mui/material/Button';
-import { useSignOut, db } from './server';
-import { useState, useEffect, useRef } from 'react';
+import { Box, Button } from '@mui/material';
+import { useSignOut } from 'react-firebase-hooks/auth';
 import Search from './Search';
-import { AuthContext } from './context';
-import { useContext } from 'react';
 import ChatList from './chatList';
-import Input from './Input';
-import { ChatContext } from './ChatContext';
 import Messages from './Messages';
+import Input from './Input';
+import { useRef } from 'react';
 
-
-function ChatPage() {
-    const autoscroll = useRef();
-    const { data } = useContext(ChatContext);
-
+const ChatPage = () => {
     const signOut = useSignOut();
+    const autoscroll = useRef(null);
+
     return (
-
-
-        <Box sx={{ position: "relative", width: "100%" }}>
+        <Box sx={{ position: "relative", width: "100vw", display: "flex" }}>
+            {/* Sidebar */}
             <Box sx={{
                 position: "fixed",
                 border: '1px solid grey',
@@ -27,12 +20,10 @@ function ChatPage() {
                 left: 0,
                 width: "33vw",
                 height: "100%",
-                backgroundColor: "#424549"
-
+                backgroundColor: "#424549",
+                boxSizing: "border-box"
             }}>
-
-
-                {/*Sign Out Button */}
+                {/* Sign Out Button */}
                 <Box sx={{
                     display: "flex",
                     position: "fixed",
@@ -42,42 +33,31 @@ function ChatPage() {
                     <Button onClick={signOut} variant="outlined" size="small">Logout</Button>
                 </Box>
 
-                {/*Search Bar */}
-                <Search></Search>
-                <ChatList></ChatList>
+                {/* Search Bar */}
+                <Search />
+                <ChatList />
             </Box>
 
-            {/* Message list and input section*/}
+            {/* Message list and input section */}
             <Box sx={{
                 position: "relative",
+                marginLeft: "33%", // Adjust to start after the sidebar
+                width: "67vw", // Take the remaining width
                 overflowY: 'auto',
                 border: '',
-                width: "66vw",
-                marginLeft: "33vw",
-
-            }}>
-
-                {/*messages list*/}
-                <main style={{ color: "black", paddingBottom: '30px' }} >
-
-                    
-                            <Messages />
-                            <div ref={autoscroll}></div>
-                    
+                boxSizing: "border-box"            }}>
+                {/* Messages list */}
+                <main style={{ color: "black", paddingBottom: '30px' }}>
+                    <Messages />
+                    <div ref={autoscroll}></div>
                 </main>
-                {/*End of messages list*/}
+                {/* End of messages list */}
 
-
-                {/*Button and Text Section */}
-                <Input></Input>
-
-
+                {/* Button and Text Section */}
+                <Input />
             </Box>
-            {/*End of message and input section */}
-
-
         </Box>
     );
-}
+};
 
 export default ChatPage;
