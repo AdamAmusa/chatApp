@@ -27,7 +27,7 @@ const ChatList = () => {
     const handleSelect =(u)=>{
         dispatch({type:"CHANGE_USER", payload:u});
         console.log("Stored!");
-        autoscroll.current.scrollIntoView({ behavior: "smooth" });
+        
     }
 
 

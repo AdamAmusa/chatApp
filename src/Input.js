@@ -14,14 +14,6 @@ const Input = () => {
     const { data } = useContext(ChatContext);
     const { currentUser } = useContext(AuthContext);
 
-    const autoscroll = useRef();
-
-    useEffect(() => {
-        if (autoscroll.current) {
-            console.log("can scroll");
-            autoscroll.current.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, []);
 
 
     const sendMessage = async (e) => {
@@ -52,7 +44,7 @@ const Input = () => {
         })
 
         setFormValue('');
-        autoscroll.current.scrollIntoView({ behavior: "smooth" });
+        
     };
 
 
@@ -71,7 +63,6 @@ const Input = () => {
             }}>Send</Button>
             </form>
         </Box>
-        <div ref={autoscroll}></div>
         </div>
     )
 }
