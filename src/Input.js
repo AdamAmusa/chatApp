@@ -1,6 +1,6 @@
 import { Box, TextField, Button } from "@mui/material"
 import SendIcon from '@mui/icons-material/Send';
-import { useContext, useState, useRef } from "react";
+import { useContext, useState, useRef,useEffect } from "react";
 import { arrayUnion, doc, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "./server";
 import { ChatContext } from "./ChatContext";
@@ -15,6 +15,14 @@ const Input = () => {
     const { currentUser } = useContext(AuthContext);
 
     const autoscroll = useRef();
+
+    useEffect(() => {
+        if (autoscroll.current) {
+            console.log("can scroll");
+            autoscroll.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, []);
+
 
     const sendMessage = async (e) => {
         e.preventDefault();

@@ -10,11 +10,7 @@ const Message = ({ message }) => { // Corrected destructuring
 
     
     const messageClass = message?.senderId === currentUser?.uid ? 'sent' : 'received';
-    console.log("Sent by ", data?.user.uid, typeof data?.user.uid); // Log the message prop
-    console.log("Recieved by " + currentUser?.uid, typeof data?.user.uid); // Log the message prop
-    console.log(messageClass)
 
-    console.log("Sender: ", message); // Log the message prop
 
     if (!message) {
         return <p>No message to display.</p>;

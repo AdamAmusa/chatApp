@@ -1,5 +1,5 @@
 import Message from "./Message";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState,useRef } from "react";
 
 import { ChatContext } from "./ChatContext";
 import { doc, onSnapshot } from "firebase/firestore";
@@ -10,9 +10,19 @@ const Messages = () => {
     const [messages, setMessages] = useState([]);
 
 
+
+    const autoscroll = useRef();
+
+    useEffect(() => {
+        if (autoscroll.current) {
+            autoscroll.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messages]);
+
     useEffect(() => {
         if (data && data.chatId) {
             console.log("Pressed" + data.chatId);
+
             const unsub = onSnapshot(doc(db, "messages", data.chatId), (snapshot) => {
                 if (snapshot.exists()) {
                     const messagesData = snapshot.data().messages;
@@ -37,6 +47,7 @@ const Messages = () => {
                 <Message key={index} message={msg} /> // Added unique key
             ))}
 
+            <div ref={autoscroll}></div>
         </div>
 
     )

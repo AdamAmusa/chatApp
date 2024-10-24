@@ -4,16 +4,23 @@ import Search from './Search';
 import ChatList from './chatList';
 import Messages from './Messages';
 import Input from './Input';
+import { useRef, useEffect } from 'react';
 
 
 
 
 const ChatPage = () => {
     const signOut = useSignOut();
-    
+    const autoscroll = useRef();
 
+    useEffect(() => {
+        if (autoscroll.current) {
+            autoscroll.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, []);
 
     return (
+        
         <Box sx={{ position: "relative", width: "100vw", display: "flex"}}>
             {/* Sidebar */}
             <Box sx={{
@@ -53,10 +60,11 @@ const ChatPage = () => {
                     <Messages />
                 </main>
                 {/* End of messages list */}
-
+                <div ref={autoscroll}></div>
                 {/* Button and Text Section */}
                 <Input />
             </Box>
+            
         </Box>
     );
 };

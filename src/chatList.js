@@ -1,6 +1,6 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Box, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import { onSnapshot, doc } from 'firebase/firestore';
 import { AuthContext } from './context';
 import { db } from './server';
@@ -11,6 +11,8 @@ const ChatList = () => {
     const [chatList, setchatList] = useState([]);
     const { currentUser } = useContext(AuthContext);
     const {dispatch} = useContext(ChatContext);
+    const autoscroll = useRef();
+
 
     useEffect(() => {
         const getChats = () => {
@@ -25,6 +27,7 @@ const ChatList = () => {
     const handleSelect =(u)=>{
         dispatch({type:"CHANGE_USER", payload:u});
         console.log("Stored!");
+        autoscroll.current.scrollIntoView({ behavior: "smooth" });
     }
 
 
@@ -46,8 +49,8 @@ const ChatList = () => {
             ))}
             </List>
 
-            
-            
+
+            <div ref={autoscroll}></div>      
         </Box>
     )
 }
