@@ -86,7 +86,7 @@ const Search = () => {
 
     return (
         <Box>
-            <TextField sx={{ top: 60, width: '30ch', color: 'primary' }} label="Enter email" size="small" id="fullWidth" inputProps={{
+            <TextField sx={{ top: 60, width: '80%', color: 'primary' }} label="Enter email" size="small" id="fullWidth" inputProps={{
                 style: { backgroundColor: 'darkgrey' }
             }} onChange={e => setEmail(e.target.value)} onKeyDown={submitKey} />
             <SearchIcon sx={{ position: "fixed", color: "black", top: 70, left: "40ch" }} /> {/* Adjust position as needed */}

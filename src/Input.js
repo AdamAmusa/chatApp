@@ -49,21 +49,43 @@ const Input = () => {
 
 
     return (
-       <div>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0, position: 'fixed', bottom: 0, right: 0, paddingBottom: '10px' }}> {/* Flex container */}
-         <form onSubmit={(e) => sendMessage(e)}>
-            {/*Button and Text Section */}
-            <TextField size="small" value={formValue} sx={{ width: '134vh' }} onChange={(e) => setFormValue(e.target.value)} />
-            <Button type="submit" variant="contained" size="small" endIcon={<SendIcon />} sx={{
-                position: 'absolute',
-                right: 0,
-                height: "4.29vh",
-                top: '39%',
-                transform: 'translateY(-50%)', // Center the button vertically
-            }}>Send</Button>
-            </form>
-        </Box>
-        </div>
+        <Box 
+        component="div" 
+        sx={{ 
+            position: 'fixed',
+            bottom: 0,
+            right: 50,
+            padding: '10px',
+            width: '60%',
+          
+        }}
+    >
+        <form onSubmit={sendMessage} style={{ display: 'flex', gap: '8px' }}>
+            <TextField
+                size="small"
+                value={formValue}
+                onChange={(e) => setFormValue(e.target.value)}
+                placeholder="Type a message..."
+                sx={{
+                    flex: 1,
+                    '& .MuiOutlinedInput-root': {
+                        backgroundColor: 'white',
+                    }
+                }}
+            />
+            <Button 
+                type="submit" 
+                variant="contained" 
+                size="small" 
+                endIcon={<SendIcon />}
+                sx={{
+                    height: '40px', // Matches the small TextField height
+                }}
+            >
+                Send
+            </Button>
+        </form>
+    </Box>
     )
 }
 export default Input;
