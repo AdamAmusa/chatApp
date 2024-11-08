@@ -36,7 +36,7 @@ function TopBar() {
   };
 
   return (
-    <AppBar position="fixed"  sx={{left:383.5, width:"80vw"}} >
+    <AppBar position="fixed"  sx={{left:383.5, width:"80vw", backgroundColor: "#424549"}} >
       <Container>
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -103,7 +103,7 @@ function TopBar() {
               </Button>
             ))}
           </Box>
-          <Box sx={{ flexGrow: 0, mr:-4 }}>
+          <Box sx={{ flexGrow: 0, mr:-20 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />

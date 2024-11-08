@@ -53,8 +53,8 @@ const ChatPage = () => {
             {/* Message list and input section */}
             <Box sx={{
                 position: "relative",
-                marginLeft: "33vw", // Adjust to start after the sidebar
-                width: "67vw", // Take the remaining width
+                marginLeft: "22vw", // Adjust to start after the sidebar
+                width: "90vw", // Take the remaining width
                 overflowY: 'auto',
                    }}>
                 {/* Messages list */}

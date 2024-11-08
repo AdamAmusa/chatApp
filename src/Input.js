@@ -18,6 +18,8 @@ const Input = () => {
 
     const sendMessage = async (e) => {
         e.preventDefault();
+        const trimmedValue = formValue.trim();
+        if (!trimmedValue) return;
         console.log("send message" + data.chatId);
         await updateDoc(doc(db, "messages", data.chatId), {
             messages: arrayUnion({

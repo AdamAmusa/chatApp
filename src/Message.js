@@ -56,6 +56,7 @@ const Message = ({ message }) => {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: isSender ? 'flex-end' : 'flex-start',
+
                 }}
             >
                 <Paper
@@ -69,6 +70,7 @@ const Message = ({ message }) => {
                         borderTopLeftRadius: isSender ? '16px' : '4px',
                         wordBreak: 'break-word',
                         maxWidth: '100%',
+
                     }}
                 >
                     <Typography variant="body1" fontSize={20}>
