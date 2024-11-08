@@ -56,7 +56,7 @@ const Input = () => {
         sx={{ 
             position: 'fixed',
             bottom: 0,
-            right: 50,
+            right: 156,
             padding: '10px',
             width: '60%',
           

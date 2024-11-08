@@ -9,15 +9,34 @@ const Message = ({ message }) => {
     
     const isSender = message?.senderId === currentUser?.uid;
 
-    // Format timestamp without date-fns
-    const formatTime = (timestamp) => {
+    // Enhanced timestamp formatting
+    const formatDateTime = (timestamp) => {
         if (!timestamp) return '';
-        const date = timestamp.toDate();
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-        });
+        
+        const messageDate = timestamp.toDate();
+        const today = new Date();
+        
+        // Check if the message was sent today
+        const isToday = messageDate.toDateString() === today.toDateString();
+        
+        if (isToday) {
+            // If message is from today, show only time
+            return messageDate.toLocaleTimeString('en-UK', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+        } else {
+            // If message is from another day, show date and time
+            return messageDate.toLocaleDateString('en-UK', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+        }
     };
 
     if (!message) {
@@ -56,7 +75,6 @@ const Message = ({ message }) => {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: isSender ? 'flex-end' : 'flex-start',
-
                 }}
             >
                 <Paper
@@ -70,7 +88,6 @@ const Message = ({ message }) => {
                         borderTopLeftRadius: isSender ? '16px' : '4px',
                         wordBreak: 'break-word',
                         maxWidth: '100%',
-
                     }}
                 >
                     <Typography variant="body1" fontSize={20}>
@@ -86,7 +103,7 @@ const Message = ({ message }) => {
                         fontSize: '0.75rem',
                     }}
                 >
-                    {formatTime(message.date)}
+                    {formatDateTime(message.date)}
                 </Typography>
             </Box>
 
