@@ -6,6 +6,7 @@ import { useContext, useState } from 'react';
 import { db } from './server';
 import List from '@mui/material/List';
 import { AuthContext } from './context';
+import {InputAdornment} from '@mui/material';
 
 
 
@@ -86,18 +87,24 @@ const Search = () => {
 
     return (
         <Box>
-            <TextField sx={{ top: 60, width: '80%', color: 'primary' }} label="Enter email" size="small" id="fullWidth" inputProps={{
-                style: { backgroundColor: 'darkgrey' }
-            }} onChange={e => setEmail(e.target.value)} onKeyDown={submitKey} />
-            <SearchIcon sx={{ position: "fixed", color: "black", top: 70, left: "40ch" }} /> {/* Adjust position as needed */}
+            <TextField sx={{ top: 60, width: '80%', color: 'primary' }} label="Enter email" size="small" id="fullWidth"  InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <SearchIcon sx={{ color: 'black' }} />
+          </InputAdornment>
+        ),
+      }}
+    />
 
-            {error && <span>Error occurred</span>}
-            {user && <List sx={{ width: "100%", top: 80 }} onClick={handleSelect}>
-                <ListItem>
-                    <ListItemText secondary={user.displayName} />
-                </ListItem>
-            </List>}
-        </Box>
+    {error && <span>Error occurred</span>}
+    {user && (
+      <List sx={{ width: '100%', top: 80 }} onClick={handleSelect}>
+        <ListItem >
+          <ListItemText secondary={user.displayName} />
+        </ListItem>
+      </List>
+    )}
+  </Box>
     )
 }
 

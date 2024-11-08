@@ -71,7 +71,7 @@ const Message = ({ message }) => {
                         maxWidth: '100%',
                     }}
                 >
-                    <Typography variant="body1">
+                    <Typography variant="body1" fontSize={20}>
                         {message.message}
                     </Typography>
                 </Paper>

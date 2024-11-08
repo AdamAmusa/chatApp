@@ -5,7 +5,7 @@ import ChatList from './chatList';
 import Messages from './Messages';
 import Input from './Input';
 import { useRef, useEffect } from 'react';
-
+import TopBar from './topbar';
 
 
 
@@ -22,13 +22,15 @@ const ChatPage = () => {
     return (
         
         <Box sx={{ position: "relative", width: "100vw", display: "flex"}}>
+                            <TopBar />
+
             {/* Sidebar */}
             <Box sx={{
                 position: "fixed",
                 border: '1px solid grey',
                 top: 0,
                 left: 0,
-                width: "32vw",
+                width: "20vw",
                 height: "100%",
                 backgroundColor: "#424549",
                 boxSizing: "border-box"
