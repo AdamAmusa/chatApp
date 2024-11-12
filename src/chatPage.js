@@ -9,8 +9,8 @@ import TopBar from './topbar';
 
 
 
+
 const ChatPage = () => {
-    const signOut = useSignOut();
     const autoscroll = useRef();
 
     useEffect(() => {
@@ -21,7 +21,7 @@ const ChatPage = () => {
 
     return (
         
-        <Box sx={{ position: "relative", width: "100vw", display: "flex"}}>
+        <Box sx={{ position: "absolute", width: "100vw", display: "flex"}}>
                             <TopBar />
 
             {/* Sidebar */}
@@ -42,7 +42,6 @@ const ChatPage = () => {
                     top: 5,
                     left: 5,
                 }}>
-                    <Button onClick={signOut} variant="outlined" size="small">Logout</Button>
                 </Box>
 
                 {/* Search Bar */}
