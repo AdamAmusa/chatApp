@@ -9,6 +9,7 @@ import VideoCallIcon from '@mui/icons-material/VideoCall';
 import Container from '@mui/material/Container';
 import { useSignOut } from './server';
 import Button from '@mui/material/Button';
+import HandleCalls from './HandleCalls';
 
 const TopBar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -44,9 +45,7 @@ const TopBar = () => {
           {/* Right side content */}
           <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', position: 'relative', top:-8, left:330 }}> 
             <Tooltip title="Start a video call">
-              <IconButton sx={{ p: 0}}>
-                <VideoCallIcon sx={{ fontSize: "4.5vh", color: "white" }} />
-              </IconButton>
+              <HandleCalls />
             </Tooltip>
 
             <Tooltip title="Open settings">

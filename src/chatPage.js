@@ -66,6 +66,7 @@ const ChatPage = () => {
                 <Input />
             </Box>
             
+            
         </Box>
     );
 };
