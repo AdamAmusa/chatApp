@@ -1,7 +1,7 @@
 import React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from './context';
-import { doc, setDoc,getDoc,serverTimestamp, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, serverTimestamp, updateDoc, onSnapshot } from 'firebase/firestore';
 import { db } from './server';
 import { IconButton } from '@mui/material';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
@@ -9,78 +9,129 @@ import { ChatContext } from './ChatContext';
 
 
 
+const CallStatus = {
+    IDLE: 'idle',
+    PENDING: 'pending',
+    ONGOING: 'ongoing',
+    ENDED: 'ended'
+  };
 
- 
+
 
 
 
 
 
 const HandleCalls = () => {
-const {data} = useContext(ChatContext)
-const { currentUser } = useContext(AuthContext);
-const [noti, setNotify] = useState(null); 
+    const { data } = useContext(ChatContext)
+    const { currentUser } = useContext(AuthContext);
+    const [noti, setNotify] = useState(null);
 
-const callRequest = async () => {
-    const callSnap = await getDoc(doc(db, 'call_inbox', data.chatId));
-    if (!data || !data.user.uid) {
-        console.error('Receiver or currentUser is not defined');
-        return;
-    }
-    
-    if (callSnap.exists()) {
-        await updateDoc(doc(db, 'call_inbox', data.chatId), {
-            receiverId: data.user.uid,
-            status: 'pending',
-            timestamp: serverTimestamp()
-        });
-        
-    }
-    else{
-         await setDoc(doc(db, 'call_inbox', data.chatId), {
-        receiverId: data.user.uid,
-        status: 'pending',
-        timestamp: serverTimestamp()
-    });
-    }
-   
+    const [callState, setCallState] = useState({
+        status: CallStatus.IDLE,
+        error: null,
+        notification: null
+      });
 
-    console.log('Call Request Sent');
-};
+    const callRequest = async () => {
+        try {
+            if (!data || !data.user.uid) {
+                console.error('Receiver or currentUser is not defined');
+                return;
 
-useEffect(() => {
-    const receiveCall = async () => {
-        if (!data) return;
-        const callDoc = doc(db, 'call_inbox', data.chatId);
-        const callSnap = await getDoc(callDoc);
-        
-        if (callSnap.exists()) {
-        setNotify(callSnap.data());
-            const callData = callSnap.data();
-            if (callData.status === 'pending' && callData.receiverId === currentUser.uid) {
-                console.log('Incoming Call from ' + callData.receiverId);
             }
+
+            const callRef = doc(db, 'call_inbox', data.chatId);
+            const callSnap = await getDoc(callRef);
+
+
+            const CallData = {
+                receiverId: data.user.uid,
+                senderId: currentUser.uid,
+                status: CallStatus.PENDING,
+                timestamp: serverTimestamp()
+            };
+
+            if (callSnap.exists()) {
+                await updateDoc(callRef, CallData);
+            } else {
+                await setDoc(callRef, CallData);
+            }
+
+
+            console.log('Call Request Sent');
+
+            setCallState(prev => ({
+                ...prev,
+                notification: {
+                  type: 'success',
+                  message: 'Call request sent'
+                }
+              }));
+        } catch (err) {
+            console.error(err);
+            setCallState(prev => ({
+                ...prev,
+                status: CallStatus.IDLE,
+                error: err,
+                notification: {                    
+                  type: 'error',
+                  message: 'Failed to send call request'
+                }
+              }));
         }
     };
 
-    const intervalId = setInterval(receiveCall, 1000); // Call receiveCall every second
+    useEffect(() => {
+        const receiveCall = async () => {
+            if (!data) return;
+            const callDoc = doc(db, 'call_inbox', data.chatId);
+            const unsuscribe = onSnapshot(callDoc, (doc) => {
+                if(doc.exists()){
+                const callData = doc.data();
 
-    const timeoutId = setTimeout(() => {
-        clearInterval(intervalId); // Stop calling receiveCall after 30 seconds
-    }, 30000);
+                if(callData.status === CallStatus.PENDING && callData.receiverId === currentUser.uid){
+                    setCallState(prev => ({
+                        ...prev,
+                        status: CallStatus.PENDING,
+                        notification: {
+                          type: 'info',
+                          message: 'Incoming call'
+                        }
+                        }));
+                }else if(callData.status === CallStatus.ONGOING && callData.receiverId === currentUser.uid){
+                    setCallState(prev => ({
+                        ...prev,
+                        status: CallStatus.ONGOING,
+                        notification: {
+                          type: 'info',
+                          message: 'Call is ongoing'
+                        }
+                        }));
+                }
 
-    return () => {
-        clearInterval(intervalId);
-        clearTimeout(timeoutId);
+                else if (callData.status === CallStatus.ENDED) {
+                    setCallState(prev => ({
+                      ...prev,
+                      status: CallStatus.IDLE,
+                      notification: {
+                        type: 'info',
+                        message: 'Call ended'
+                      }
+                    }));
+                }
+            }
+            }); 
+
     };
-}, []);
+}, [data?.chatId, currentUser?.uid]);
 
 
     return (
         <div>
-             <IconButton sx={{ p: 0}} onClick={() => callRequest()}>
+            <IconButton sx={{ p: 0 }} onClick={() => callRequest()}>
                 <VideoCallIcon sx={{ fontSize: "4.5vh", color: "white" }} />
-              </IconButton>
+            </IconButton>
         </div>
     );
 };
