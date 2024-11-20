@@ -28,7 +28,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);  // Initialize the Firebase app
 const auth = getAuth(app);                  // Initialize Firebase Authentication
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 
 
@@ -138,7 +138,7 @@ export const useSignOut = () => {
 
 }
 
-export { app, auth, db, useFetch} ;
+export { app, auth, useFetch} ;
 
 
 
