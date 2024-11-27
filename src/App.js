@@ -5,6 +5,7 @@ import SignUp from './SignUp';
 import ChatPage from './chatPage';
 import { AuthContext } from './context';
 import { useContext } from 'react';
+import VideoCall from './videoCall';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
             <Route path="/signup" element={<SignUp />} />  
             <Route path="/login" element={<Login />} />
             <Route path ='/chatpage' element={<ChatPage/>}/>
+            <Route path="/call" element={<VideoCall/>} />
           </Routes>
         </Router>
       </header>
