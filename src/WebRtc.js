@@ -36,12 +36,15 @@ export const useMakeCall = () => {
     const navigate = useNavigate();
     const { currentUser } = useContext(AuthContext);
     const { data } = useContext(ChatContext);
-    const { setLocalStream, remoteStream } = useMediaStream();
+    const { setLocalStream, localStream } = useMediaStream();
+    const [remoteStream, setRemoteStream] = useState(new MediaStream());
     const peerConnectionRef = useRef(null);
 
     const makeCall = async () => {
         console.log("makeCall");
         const configuration = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] };
+        const receiverDoc = doc(db, `signaling/${data.user.uid}`);
+
         peerConnectionRef.current = new RTCPeerConnection(configuration);
 
         try {
@@ -67,10 +70,16 @@ export const useMakeCall = () => {
             });
         }
 
+        peerConnectionRef.current.ontrack = event => {
+            console.log('Got remote track:', event.streams[0]);
+            const [remoteStream] = event.streams;
+            setRemoteStream(remoteStream);
+        };
+
         peerConnectionRef.current.onicecandidate = async event => {
             if (event.candidate) {
                 console.log("Creating ICE candidate", event.candidate);
-                const iceCandidatesCollection = collection(signalingDoc, 'iceCandidates');
+                const iceCandidatesCollection = collection(receiverDoc, 'iceCandidates');
                 await addDoc(iceCandidatesCollection, event.candidate.toJSON());
             } else {
                 console.log("ICE candidate gathering complete");
@@ -87,15 +96,15 @@ export const useMakeCall = () => {
 
         peerConnectionRef.current.ontrack = event => {
             console.log('Got remote track:', event.streams[0]);
+            setRemoteStream(event.streams[0]);
             event.streams[0].getTracks().forEach(track => {
                 console.log('Add a track to the remoteStream:', track);
                 remoteStream.addTrack(track);
             });
         };
-
         const offer = await peerConnectionRef.current.createOffer();
         await peerConnectionRef.current.setLocalDescription(offer);
-        await updateDoc(signalingDoc, {
+        await setDoc(receiverDoc, {
             offer: {
                 offerId: offer.sdp,
                 sender: currentUser.uid
@@ -134,8 +143,11 @@ export const useMakeCall = () => {
 export const useReceiveCall = () => {
     const { currentUser } = useContext(AuthContext);
     const { data } = useContext(ChatContext);
-    const { setLocalStream, remoteStream } = useMediaStream();
+    const { setLocalStream, localStream } = useMediaStream();
+    const { setRemoteStream, remoteStream } = useMediaStream();
     const peerConnectionRef = useRef(null);
+    const navigate = useNavigate();
+
 
     const receiveCall = async () => {
         const configuration = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] };
@@ -143,8 +155,10 @@ export const useReceiveCall = () => {
 
         try {
             const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            console.log("Local track is " + localStream);
             setLocalStream(localStream);
             localStream.getTracks().forEach(track => {
+                console.log('Add a track to the peer connection:', track);
                 peerConnectionRef.current.addTrack(track, localStream);
             });
         } catch (error) {
@@ -153,7 +167,7 @@ export const useReceiveCall = () => {
             return;
         }
 
-        const signalingDoc = doc(db, `signaling/${data.user.uid}`);
+        const signalingDoc = doc(db, `signaling/${currentUser.uid}`);
         onSnapshot(signalingDoc, async snapshot => {
             const message = snapshot.data();
             if (message && message.offer) {
@@ -161,10 +175,11 @@ export const useReceiveCall = () => {
                     type: 'offer',
                     sdp: message.offer.offerId
                 });
+                const senderDoc = doc(db, `signaling/${message.offer.sender}`);
                 await peerConnectionRef.current.setRemoteDescription(remoteDesc);
                 const answer = await peerConnectionRef.current.createAnswer();
                 await peerConnectionRef.current.setLocalDescription(answer);
-                await updateDoc(signalingDoc, { answer: { type: answer.type, sdp: answer.sdp } });
+                await updateDoc(senderDoc, { answer: { type: answer.type, sdp: answer.sdp } });
             } else if (message && message.iceCandidates) {
                 for (const candidate of message.iceCandidates) {
                     try {
@@ -177,12 +192,10 @@ export const useReceiveCall = () => {
         });
 
         peerConnectionRef.current.ontrack = event => {
-            console.log('Got remote track:', event.streams[0]);
-            event.streams[0].getTracks().forEach(track => {
-                console.log('Add a track to the remoteStream:', track);
-                remoteStream.addTrack(track);
-            });
+            console.log('Got remote track:', event.streams[0]);        
+                setRemoteStream(event.streams[0]);    
         };
+        navigate("/call");
     };
 
     return receiveCall;
