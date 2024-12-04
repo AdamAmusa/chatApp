@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useRef } from "react";
-import { doc, setDoc, getDoc, onSnapshot, updateDoc, collection, addDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, onSnapshot, updateDoc, collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from "./server"; // Ensure correct import
 import { AuthContext } from "./context";
 import { ChatContext } from "./ChatContext";
@@ -36,8 +36,9 @@ export const useMakeCall = () => {
     const navigate = useNavigate();
     const { currentUser } = useContext(AuthContext);
     const { data } = useContext(ChatContext);
-    const { setLocalStream, localStream } = useMediaStream();
-    const [remoteStream, setRemoteStream] = useState(new MediaStream());
+    const { setLocalStream,remoteStream, setRemoteStream } = useMediaStream();
+    const iceCandidatesQueue = useRef([]);
+
     const peerConnectionRef = useRef(null);
 
     const makeCall = async () => {
@@ -70,16 +71,10 @@ export const useMakeCall = () => {
             });
         }
 
-        peerConnectionRef.current.ontrack = event => {
-            console.log('Got remote track:', event.streams[0]);
-            const [remoteStream] = event.streams;
-            setRemoteStream(remoteStream);
-        };
-
         peerConnectionRef.current.onicecandidate = async event => {
             if (event.candidate) {
                 console.log("Creating ICE candidate", event.candidate);
-                const iceCandidatesCollection = collection(receiverDoc, 'iceCandidates');
+                const iceCandidatesCollection = collection(signalingDoc, 'iceCandidates');
                 await addDoc(iceCandidatesCollection, event.candidate.toJSON());
             } else {
                 console.log("ICE candidate gathering complete");
@@ -97,10 +92,6 @@ export const useMakeCall = () => {
         peerConnectionRef.current.ontrack = event => {
             console.log('Got remote track:', event.streams[0]);
             setRemoteStream(event.streams[0]);
-            event.streams[0].getTracks().forEach(track => {
-                console.log('Add a track to the remoteStream:', track);
-                remoteStream.addTrack(track);
-            });
         };
         const offer = await peerConnectionRef.current.createOffer();
         await peerConnectionRef.current.setLocalDescription(offer);
@@ -119,19 +110,42 @@ export const useMakeCall = () => {
                         type: 'answer',
                         sdp: data.answer.sdp
                     });
+                    console.log("Setting remote description", remoteDesc);
                     await peerConnectionRef.current.setRemoteDescription(remoteDesc);
-                }
-            }
-            if (data.iceCandidates) {
-                for (const candidate of data.iceCandidates) {
-                    try {
-                        await peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate));
-                    } catch (e) {
-                        console.error('Error adding received ice candidate', e);
+
+                    // Add queued ICE candidates
+                    while (iceCandidatesQueue.current.length > 0) {
+                        const candidate = iceCandidatesQueue.current.shift();
+                        try {
+                            console.log("Adding queued ICE candidate", candidate);
+                            await peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+                        } catch (e) {
+                            console.error('Error adding received ice candidate', e);
+                        }
                     }
                 }
             }
+
+            // Query the iceCandidates subcollection
+            const iceCandidatesCollection = collection(signalingDoc, 'iceCandidates');
+            const iceCandidatesSnapshot = await getDocs(iceCandidatesCollection);
+            iceCandidatesSnapshot.forEach(doc => {
+                const candidate = doc.data();
+                if (peerConnectionRef.current.signalingState === "stable") {
+                    try {
+                        console.log("Adding ICE candidate", candidate);
+                        peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+                    } catch (e) {
+                        console.error('Error adding received ice candidate', e);
+                    }
+                } else {
+                    console.log("Queueing ICE candidate", candidate);
+                    iceCandidatesQueue.current.push(candidate);
+                }
+            });
         });
+
+       
 
         // Navigate to the Call component and pass parameters
         navigate("/call");
@@ -142,11 +156,10 @@ export const useMakeCall = () => {
 
 export const useReceiveCall = () => {
     const { currentUser } = useContext(AuthContext);
-    const { data } = useContext(ChatContext);
-    const { setLocalStream, localStream } = useMediaStream();
-    const { setRemoteStream, remoteStream } = useMediaStream();
+    const { setLocalStream, setRemoteStream } = useMediaStream();
     const peerConnectionRef = useRef(null);
     const navigate = useNavigate();
+    const iceCandidatesQueue = useRef([]);
 
 
     const receiveCall = async () => {
@@ -170,25 +183,46 @@ export const useReceiveCall = () => {
         const signalingDoc = doc(db, `signaling/${currentUser.uid}`);
         onSnapshot(signalingDoc, async snapshot => {
             const message = snapshot.data();
+            const senderDoc = doc(db, `signaling/${message.offer.sender}`);
+            const iceCandidates = collection(senderDoc, 'iceCandidates');
             if (message && message.offer) {
                 const remoteDesc = new RTCSessionDescription({
                     type: 'offer',
                     sdp: message.offer.offerId
                 });
-                const senderDoc = doc(db, `signaling/${message.offer.sender}`);
+                
                 await peerConnectionRef.current.setRemoteDescription(remoteDesc);
                 const answer = await peerConnectionRef.current.createAnswer();
                 await peerConnectionRef.current.setLocalDescription(answer);
+
+                
                 await updateDoc(senderDoc, { answer: { type: answer.type, sdp: answer.sdp } });
-            } else if (message && message.iceCandidates) {
-                for (const candidate of message.iceCandidates) {
+                while (iceCandidatesQueue.current.length > 0) {
+                    const candidate = iceCandidatesQueue.current.shift();
                     try {
+                        console.log("Adding queued ICE candidate", candidate);
                         await peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate));
                     } catch (e) {
                         console.error('Error adding received ice candidate', e);
                     }
                 }
-            }
+            } 
+
+            const iceCandidatesSnapshot = await getDocs(iceCandidates);
+            iceCandidatesSnapshot.forEach(doc => {
+                const candidate = doc.data();
+                if (peerConnectionRef.current.signalingState === "stable") {
+                    try {
+                        console.log("Adding ICE candidate", candidate);
+                         peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+                    } catch (e) {
+                        console.error('Error adding received ice candidate', e);
+                    }
+                } else {
+                    console.log("Queueing ICE candidate", candidate);
+                    iceCandidatesQueue.current.push(candidate);
+                }
+            }); 
         });
 
         peerConnectionRef.current.ontrack = event => {
