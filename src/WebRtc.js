@@ -8,11 +8,9 @@ import { useMediaStream } from "./MediaStreamContext"; // Ensure correct import
 
 
  const configuration = {  iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' },
-        { urls: 'stun:stun2.l.google.com:19302' },
-        { urls: 'stun:stun3.l.google.com:19302' },
-        { urls: 'stun:stun4.l.google.com:19302' },
+        { urls: 'relay1.expressturn.com:3478',
+            username: 'ef8G7X91LNXCNYE34S',
+            credential: '1SobprLTJ7z0Jx3x'}
     ]};
 export const useCallStatus = () => {
     const { currentUser } = useContext(AuthContext);
@@ -221,6 +219,7 @@ export const useReceiveCall = () => {
             const iceCandidatesSnapshot = await getDocs(iceCandidates);
             iceCandidatesSnapshot.forEach(doc => {
                 const candidate = doc.data();
+                console.log("Received ICE candidate", candidate);
                 if (peerConnectionRef.current.signalingState === "stable") {
                     try {
                         console.log("Adding ICE candidate", candidate);
