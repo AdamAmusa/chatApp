@@ -236,7 +236,7 @@ export const useReceiveCall = () => {
 
         peerConnectionRef.current.ontrack = event => {
             console.log('Got remote track:', event.streams[0]);        
-                setRemoteStream(event.streams[0]);    
+                setRemoteStream(event.streams[0]);  
         };
         navigate("/call");
     };
