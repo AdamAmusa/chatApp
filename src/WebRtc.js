@@ -8,7 +8,7 @@ import { useMediaStream } from "./MediaStreamContext"; // Ensure correct import
 
 
  const configuration = {  iceServers: [
-        { urls: 'relay1.expressturn.com:3478',
+        { urls: 'turn:relay1.expressturn.com:3478',
             username: 'ef8G7X91LNXCNYE34S',
             credential: '1SobprLTJ7z0Jx3x'}
     ]};
