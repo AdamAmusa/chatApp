@@ -6,9 +6,21 @@ import { ChatContext } from "./ChatContext";
 import { useNavigate } from "react-router-dom";
 import { useMediaStream } from "./MediaStreamContext"; // Ensure correct import
 
+
+ const configuration = {  iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' },
+        { urls: 'stun:stun3.l.google.com:19302' },
+        { urls: 'stun:stun4.l.google.com:19302' },
+    ]};
 export const useCallStatus = () => {
     const { currentUser } = useContext(AuthContext);
     const [callStatus, setCallStatus] = useState("idle");
+
+
+   
+
 
     useEffect(() => {
         if (!currentUser) return;
@@ -43,7 +55,6 @@ export const useMakeCall = () => {
 
     const makeCall = async () => {
         console.log("makeCall");
-        const configuration = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] };
         const receiverDoc = doc(db, `signaling/${data.user.uid}`);
 
         peerConnectionRef.current = new RTCPeerConnection(configuration);
@@ -133,7 +144,7 @@ export const useMakeCall = () => {
                 const candidate = doc.data();
                 if (peerConnectionRef.current.signalingState === "stable") {
                     try {
-                        console.log("Adding ICE candidate", candidate);
+                        console.log("Adding ICE candidate (Requester)", candidate);
                         peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate));
                     } catch (e) {
                         console.error('Error adding received ice candidate', e);
@@ -163,7 +174,6 @@ export const useReceiveCall = () => {
 
 
     const receiveCall = async () => {
-        const configuration = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] };
         peerConnectionRef.current = new RTCPeerConnection(configuration);
 
         try {
