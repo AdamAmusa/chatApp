@@ -8,9 +8,9 @@ import { useMediaStream } from "./MediaStreamContext"; // Ensure correct import
 
 
  const configuration = {  iceServers: [
-        { urls: 'turn:relay1.expressturn.com:3478',
-            username: 'ef8G7X91LNXCNYE34S',
-            credential: '1SobprLTJ7z0Jx3x'}
+        { url: 'turn:turn.anyfirewall.com:443?transport=tcp',
+            credential: 'webrtc',
+            username: 'webrtc'}
     ]};
 export const useCallStatus = () => {
     const { currentUser } = useContext(AuthContext);
