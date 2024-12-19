@@ -47,6 +47,9 @@ export const useCallStatus = () => {
     return [callStatus, setCallStatus];
 };
 
+
+
+
 export const useMakeCall = () => {
     const navigate = useNavigate();
     const { currentUser } = useContext(AuthContext);
@@ -55,8 +58,23 @@ export const useMakeCall = () => {
     const iceCandidatesQueue = useRef([]);
 
     const peerConnectionRef = useRef(null);
+    const connectionTimeoutRef = useRef(null);
+
+
+
+
+    const cleanup = async () => {
+        if (peerConnectionRef.current) {
+            peerConnectionRef.current.close();
+            peerConnectionRef.current = null;
+        }
+        if (connectionTimeoutRef.current) {
+            clearTimeout(connectionTimeoutRef.current);
+        }
+    };
 
     const makeCall = async () => {
+        await cleanup();
         console.log("makeCall");
         const receiverDoc = doc(db, `signaling/${data.user.uid}`);
 
@@ -99,8 +117,12 @@ export const useMakeCall = () => {
             console.log("ICE gathering state: ", peerConnectionRef.current.iceGatheringState);
         };
 
-        peerConnectionRef.current.onconnectionstatechange = () => {
+        peerConnectionRef.current.onconnectionstatechange = async () => {
             console.log("Connection state: ", peerConnectionRef.current.connectionState);
+            if (peerConnectionRef.current.connectionState === "failed") {
+                await cleanup();
+                alert("Connection failed. Call ended.");
+            }
         };
 
         peerConnectionRef.current.ontrack = event => {
@@ -168,7 +190,22 @@ export const useMakeCall = () => {
     return makeCall;
 };
 
-export const useReceiveCall = () => {
+export const useReceiveCall = async () => {
+    const connectionTimeoutRef = useRef(null);
+
+
+    const cleanup = async () => {
+        if (peerConnectionRef.current) {
+            peerConnectionRef.current.close();
+            peerConnectionRef.current = null;
+        }
+        if (connectionTimeoutRef.current) {
+            clearTimeout(connectionTimeoutRef.current);
+        }
+    };
+
+    await cleanup(); // Cleanup any existing connections
+
     const { currentUser } = useContext(AuthContext);
     const { setLocalStream, setRemoteStream } = useMediaStream();
     const peerConnectionRef = useRef(null);
