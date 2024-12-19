@@ -9,42 +9,42 @@ import { useMediaStream } from "./MediaStreamContext"; // Ensure correct import
 
 const configuration = {
     iceServers: [
-        "stun:stun.l.google.com:19302",
-        "stun1.l.google.com:19302",
-        "stun2.l.google.com:19302",
-        "stun3.l.google.com:19302",
-        "stun4.l.google.com:19302",
-        "stun.ekiga.net",
-        "stun.ideasip.com",
-        "stun.rixtelecom.se",
-        "stun.schlund.de",
-        "stun.stunprotocol.org:347",
-        "stun.voiparound.com",
-        "stun.voipbuster.com",
-        "stun.voipstunt.com",
-        "stun.voxgratia.org",
+        {urls: "stun:stun.l.google.com:19302"},
+        {urls:"stun1.l.google.com:19302"},
+        {urls:"stun2.l.google.com:19302"},
+        {urls:"stun3.l.google.com:19302"},
+        {urls: "stun4.l.google.com:19302"},
+        {urls: "stun.ekiga.net"},
+        {urls:"stun.ideasip.com"},
+        {urls:"stun.rixtelecom.se"},
+        {urls:"stun.schlund.de"},
+        {urls:"stun.stunprotocol.org:347"},
+        {urls:"stun.voiparound.com"},
+        {urls:"stun.voipbuster.com"},
+        {urls:"stun.voipstunt.com"},
+        {urls:"stun.voxgratia.org"},
         {
-            url: 'turn:numb.viagenie.ca',
+            urls: 'turn:numb.viagenie.ca',
             credential: 'muazkh',
             username: 'webrtc@live.com'
         },
         {
-            url: 'turn:192.158.29.39:3478?transport=udp',
+            urls: 'turn:192.158.29.39:3478?transport=udp',
             credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
             username: '28224511:1379330808'
         },
         {
-            url: 'turn:192.158.29.39:3478?transport=tcp',
+            urls: 'turn:192.158.29.39:3478?transport=tcp',
             credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
             username: '28224511:1379330808'
         },
         {
-            url: 'turn:turn.bistri.com:80',
+            urls: 'turn:turn.bistri.com:80',
             credential: 'homeo',
             username: 'homeo'
         },
         {
-            url: 'turn:turn.anyfirewall.com:443?transport=tcp',
+            urls: 'turn:turn.anyfirewall.com:443?transport=tcp',
             credential: 'webrtc',
             username: 'webrtc'
         }
