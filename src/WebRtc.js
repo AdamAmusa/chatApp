@@ -191,7 +191,17 @@ export const useMakeCall = () => {
 };
 
 export const useReceiveCall = async () => {
+
+
+    
+
+    const { currentUser } = useContext(AuthContext);
+    const { setLocalStream, setRemoteStream } = useMediaStream();
+    const peerConnectionRef = useRef(null);
+    const navigate = useNavigate();
+    const iceCandidatesQueue = useRef([]);
     const connectionTimeoutRef = useRef(null);
+
 
 
     const cleanup = async () => {
@@ -204,13 +214,8 @@ export const useReceiveCall = async () => {
         }
     };
 
-    await cleanup(); // Cleanup any existing connections
+        await cleanup(); // Cleanup any existing connections
 
-    const { currentUser } = useContext(AuthContext);
-    const { setLocalStream, setRemoteStream } = useMediaStream();
-    const peerConnectionRef = useRef(null);
-    const navigate = useNavigate();
-    const iceCandidatesQueue = useRef([]);
 
 
     const receiveCall = async () => {
