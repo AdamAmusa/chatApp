@@ -11,9 +11,9 @@ const configuration = {
     iceServers: [
         
         {
-            url: 'turn:openrelay.metered.ca:80',
-            credential: 'openrelayproject',
-            username: 'openrelayproject'
+            url: 'turn:turn.speed.cloudflare.com:50000',
+            credential: 'aba9b169546eb6dcc7bfb1cdf34544cf95b5161d602e3b5fa7c8342b2e9802fb',
+            username: 'a9fe0be96ed831ffe7823a6c722c15c12c76c66e13b16ffbebb6cc0d4ca2dc5361aaf8172355f19e044aad55201e3c6d56f3908a0d556511ce84b600e342cff8'
         },
     ]
 };
