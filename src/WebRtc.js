@@ -7,17 +7,41 @@ import { useNavigate } from "react-router-dom";
 import { useMediaStream } from "./MediaStreamContext"; // Ensure correct import
 
 
- const configuration = {  iceServers: [
-        { url: 'turn:turn.anyfirewall.com:443?transport=tcp',
+const configuration = {
+    iceServers: [
+        {
+            url: 'turn:numb.viagenie.ca',
+            credential: 'muazkh',
+            username: 'webrtc@live.com'
+        },
+        {
+            url: 'turn:192.158.29.39:3478?transport=udp',
+            credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+            username: '28224511:1379330808'
+        },
+        {
+            url: 'turn:192.158.29.39:3478?transport=tcp',
+            credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+            username: '28224511:1379330808'
+        },
+        {
+            url: 'turn:turn.bistri.com:80',
+            credential: 'homeo',
+            username: 'homeo'
+        },
+        {
+            url: 'turn:turn.anyfirewall.com:443?transport=tcp',
             credential: 'webrtc',
-            username: 'webrtc'}
-    ]};
+            username: 'webrtc'
+        }
+    ]
+};
 export const useCallStatus = () => {
     const { currentUser } = useContext(AuthContext);
     const [callStatus, setCallStatus] = useState("idle");
 
 
-   
+
 
 
     useEffect(() => {
@@ -46,7 +70,7 @@ export const useMakeCall = () => {
     const navigate = useNavigate();
     const { currentUser } = useContext(AuthContext);
     const { data } = useContext(ChatContext);
-    const { setLocalStream,remoteStream, setRemoteStream } = useMediaStream();
+    const { setLocalStream, remoteStream, setRemoteStream } = useMediaStream();
     const iceCandidatesQueue = useRef([]);
 
     const peerConnectionRef = useRef(null);
@@ -154,7 +178,7 @@ export const useMakeCall = () => {
             });
         });
 
-       
+
 
         // Navigate to the Call component and pass parameters
         navigate("/call");
@@ -198,12 +222,12 @@ export const useReceiveCall = () => {
                     type: 'offer',
                     sdp: message.offer.offerId
                 });
-                
+
                 await peerConnectionRef.current.setRemoteDescription(remoteDesc);
                 const answer = await peerConnectionRef.current.createAnswer();
                 await peerConnectionRef.current.setLocalDescription(answer);
 
-                
+
                 await updateDoc(senderDoc, { answer: { type: answer.type, sdp: answer.sdp } });
                 while (iceCandidatesQueue.current.length > 0) {
                     const candidate = iceCandidatesQueue.current.shift();
@@ -214,7 +238,7 @@ export const useReceiveCall = () => {
                         console.error('Error adding received ice candidate', e);
                     }
                 }
-            } 
+            }
 
             const iceCandidatesSnapshot = await getDocs(iceCandidates);
             iceCandidatesSnapshot.forEach(doc => {
@@ -223,7 +247,7 @@ export const useReceiveCall = () => {
                 if (peerConnectionRef.current.signalingState === "stable") {
                     try {
                         console.log("Adding ICE candidate", candidate);
-                         peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+                        peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate));
                     } catch (e) {
                         console.error('Error adding received ice candidate', e);
                     }
@@ -231,12 +255,12 @@ export const useReceiveCall = () => {
                     console.log("Queueing ICE candidate", candidate);
                     iceCandidatesQueue.current.push(candidate);
                 }
-            }); 
+            });
         });
 
         peerConnectionRef.current.ontrack = event => {
-            console.log('Got remote track:', event.streams[0]);        
-                setRemoteStream(event.streams[0]);  
+            console.log('Got remote track:', event.streams[0]);
+            setRemoteStream(event.streams[0]);
         };
         navigate("/call");
     };
