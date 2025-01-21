@@ -37,13 +37,12 @@ const ChatList = () => {
             
             <List sx={{ width: "100%", top: 80 }}>
                 {Object.entries(chatList)?.map((chat) => (
-                    <ListItemButton onClick={() => handleSelect(chat[1].userInfo)} sx={{height:"3vw"}}>
+                    <ListItemButton onClick={() => handleSelect(chat[1].userInfo)} sx={{height:"3vw", borderBottom: "1px solid black"}}>
                 <ListItem disablePadding key={chat[0]}>
                     <Box sx={{ display: "flex", alignItems: "center", width:"100%", height:20}}>
-                        <AccountCircleIcon sx={{fontSize: "6vh", color:"white"}} />
-                        <p style={{color:'white',  marginLeft: "18px", fontSize:"20px"}}>{chat[1].userInfo.displayName}</p>
-                    </Box>
-                    
+                        <AccountCircleIcon sx={{fontSize: "5vh", color:"black"}} />
+                        <p style={{color:'black',  marginLeft: "18px", fontSize:"20px"}}>{chat[1].userInfo.displayName}</p>
+                    </Box>             
                 </ListItem>
                 </ListItemButton>
             ))}

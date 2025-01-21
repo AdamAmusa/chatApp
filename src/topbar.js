@@ -17,19 +17,8 @@ const TopBar = () => {
   const signOut = useSignOut();
 
 
-
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
   return (
-    <AppBar position="fixed" sx={{ left: 0, width: "100%", height: "5%", backgroundColor: "#424549" }}>
+    <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Container>
         <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'space-between' }}>
           {/* Left side content */}
@@ -49,7 +38,7 @@ const TopBar = () => {
             </Tooltip>
 
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml:3 }}>
+              <IconButton  sx={{ p: 0, ml:3 }}>
                 <AccountCircleIcon sx={{ fontSize: "4.5vh", color: "white" }} />
               </IconButton>
             </Tooltip>

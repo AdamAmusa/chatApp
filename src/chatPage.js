@@ -6,8 +6,7 @@ import Messages from './Messages';
 import Input from './Input';
 import { useRef, useEffect } from 'react';
 import TopBar from './topbar';
-import { DashboardLayout } from '@toolpad/core';
-import { AppProvider } from '@toolpad/core';
+import Drawer from '@mui/material/Drawer';
 
 
 
@@ -21,45 +20,27 @@ const ChatPage = () => {
     }, []);
 
     return (
-        <AppProvider >
-        
-       
-        <DashboardLayout>
-        <Box sx={{ position: "absolute", width: "100vw", display: "flex"}}>
-                            <TopBar />
 
-            {/* Sidebar */}
-            <Box sx={{
-                position: "fixed",
-                border: '1px solid grey',
-                top: 0,
-                left: 0,
-                width: "20vw",
-                height: "100%",
-                backgroundColor: "#424549",
-                boxSizing: "border-box"
-            }}>
-                {/* Sign Out Button */}
-                <Box sx={{
-                    display: "flex",
-                    position: "fixed",
-                    top: 5,
-                    left: 5,
-                }}>
-                </Box>
-
-                {/* Search Bar */}
-                <Search />
-                <ChatList />
-            </Box>
+        <Box sx={{ position: "absolute", width: "100vw", display: "flex" }}>
+            <TopBar />
+            <Drawer
+                variant="permanent"
+                sx={{
+                    display: { xs: 'none', sm: 'block' },
+                    '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 300 },
+                }}
+                open
+            >
+                <div>
+                    <Search />
+                    <ChatList />
+                </div>        
+            </Drawer>
 
             {/* Message list and input section */}
             <Box sx={{
-                position: "relative",
-                marginLeft: "22vw", // Adjust to start after the sidebar
-                width: "90vw", // Take the remaining width
-                overflowY: 'auto',
-                   }}>
+
+            }}>
                 {/* Messages list */}
                 <main style={{ color: "black", paddingBottom: '50px' }}>
                     <Messages />
@@ -69,11 +50,10 @@ const ChatPage = () => {
                 {/* Button and Text Section */}
                 <Input />
             </Box>
-            
-            
+
+
         </Box>
-        </DashboardLayout>
-        </AppProvider>
+
     );
 };
 
