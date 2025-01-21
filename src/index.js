@@ -5,18 +5,18 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthContextProvider } from './context';
 import { ChatContextProvider } from './ChatContext';
-import { MediaStreamProvider, useMediaStream } from './MediaStreamContext';
+import { MediaStreamProvider } from './MediaStreamContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <AuthContextProvider>
     <MediaStreamProvider>
-    <ChatContextProvider>
-  <React.StrictMode>
-    <App/>
-  </React.StrictMode>
-  </ChatContextProvider>
-  </MediaStreamProvider>
+      <ChatContextProvider>
+        <React.StrictMode>
+            <App />
+        </React.StrictMode>
+      </ChatContextProvider>
+    </MediaStreamProvider>
   </AuthContextProvider>
 );
 

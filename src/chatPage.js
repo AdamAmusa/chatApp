@@ -6,7 +6,8 @@ import Messages from './Messages';
 import Input from './Input';
 import { useRef, useEffect } from 'react';
 import TopBar from './topbar';
-
+import { DashboardLayout } from '@toolpad/core';
+import { AppProvider } from '@toolpad/core';
 
 
 
@@ -20,7 +21,10 @@ const ChatPage = () => {
     }, []);
 
     return (
+        <AppProvider >
         
+       
+        <DashboardLayout>
         <Box sx={{ position: "absolute", width: "100vw", display: "flex"}}>
                             <TopBar />
 
@@ -68,6 +72,8 @@ const ChatPage = () => {
             
             
         </Box>
+        </DashboardLayout>
+        </AppProvider>
     );
 };
 

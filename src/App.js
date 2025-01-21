@@ -6,21 +6,26 @@ import ChatPage from './chatPage';
 import { AuthContext } from './context';
 import { useContext } from 'react';
 import VideoCall from './videoCall';
-
+import { DashboardLayout } from '@toolpad/core';
 
 function App() {
 
-  const {currentUser} = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
   console.log(currentUser);
   return (
     <div className="App">
       <header className="App-header">
         <Router>
           <Routes>
-            <Route path="/signup" element={<SignUp />} />  
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
-            <Route path ='/chatpage' element={<ChatPage/>}/>
-            <Route path="/call" element={<VideoCall/>} />
+
+            <Route path='/chatpage' element=
+              {
+                <ChatPage />} />
+
+
+            <Route path="/call" element={<VideoCall />} />
           </Routes>
         </Router>
       </header>
