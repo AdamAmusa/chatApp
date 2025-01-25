@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { doc, setDoc, getDoc, onSnapshot, updateDoc, collection, addDoc, getDocs } from "firebase/firestore";
-import { db } from "./server"; // Ensure correct import
+import { db } from "./firebaseConfig"; // Ensure correct import
 import { AuthContext } from "./context";
 import { ChatContext } from "./ChatContext";
 import { useNavigate } from "react-router-dom";

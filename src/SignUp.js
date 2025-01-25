@@ -9,11 +9,9 @@ import { GoogleIcon, FacebookIcon } from './CustomIcons';
 
 import { useEffect, useState } from "react";
 
-import { usesignInGoogle, } from "./server";
-import { useFetch } from "./server";
-import { signUpUser } from "./server";
-
-
+import { usesignInGoogle } from "./Authentication";
+import { useFetch } from "./Authentication";
+import { signUpUser } from "./Authentication";
 
 
 const Card = styled(MuiCard)(({ theme }) => ({

@@ -1,16 +1,12 @@
-import { FormControl, FormLabel, TextField, InputLabel, InputBase } from "@mui/material";
-import Box from "@mui/material/Box";
-import { styled,alpha } from '@mui/material/styles';
+import { FormControl, TextField, InputLabel, Box, styled, alpha, Button, Typography, Link} from "@mui/material";
 import MuiCard from '@mui/material/Card';
-import Button from '@mui/material/Button';
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
-import { GoogleIcon} from './CustomIcons';
-import { signInUser } from "./server";
 import { useState } from "react";
-import {useFetch} from "./server";
-import { usesignInGoogle } from "./server";
 
+import { signInUser } from "./Authentication";
+import { useFetch } from "./Authentication";
+import { usesignInGoogle } from "./Authentication";
+
+import { GoogleIcon} from './CustomIcons';
 
 
 

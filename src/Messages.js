@@ -1,9 +1,8 @@
 import Message from "./Message";
 import { useContext, useEffect, useState,useRef } from "react";
-
 import { ChatContext } from "./ChatContext";
 import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "./server";
+import { db } from "./firebaseConfig";
 
 const Messages = () => {
     const { data } = useContext(ChatContext);
@@ -41,7 +40,7 @@ const Messages = () => {
     }
 
     return (
-        <div className="chat-container">
+        <div >
 
             {messages?.map((msg, index) => (
                 <Message key={index} message={msg} /> // Added unique key

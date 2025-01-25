@@ -3,7 +3,7 @@ import { Box, List, ListItem, ListItemButton, ListItemText } from '@mui/material
 import { useContext, useState, useEffect, useRef } from 'react';
 import { onSnapshot, doc } from 'firebase/firestore';
 import { AuthContext } from './context';
-import { db } from './server';
+import { db } from './firebaseConfig';
 import { ChatContext } from './ChatContext';
 
 const ChatList = () => {
@@ -13,16 +13,18 @@ const ChatList = () => {
     const {dispatch} = useContext(ChatContext);
     const autoscroll = useRef();
 
-
-    useEffect(() => {
-        const getChats = () => {
+    const getChats = () => {
             const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (snapshot) => {
                 setchatList(snapshot.data());
             });
             return () => unsub();
         };
-        currentUser.uid && getChats();
-    }, [currentUser.uid]);
+
+        useEffect(() => {
+            if (currentUser && currentUser.uid) {
+                getChats(currentUser.uid);
+            }
+        }, [currentUser]);
 
     const handleSelect =(u)=>{
         dispatch({type:"CHANGE_USER", payload:u});

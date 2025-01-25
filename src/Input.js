@@ -2,7 +2,7 @@ import { Box, TextField, Button } from "@mui/material"
 import SendIcon from '@mui/icons-material/Send';
 import { useContext, useState, useRef,useEffect } from "react";
 import { arrayUnion, doc, serverTimestamp, Timestamp, updateDoc } from "firebase/firestore";
-import { db } from "./server";
+import { db } from "./firebaseConfig";
 import { ChatContext } from "./ChatContext";
 import { v4 as uuid } from "uuid";
 import { AuthContext } from "./context";

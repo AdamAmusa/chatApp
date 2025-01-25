@@ -7,7 +7,7 @@ import Tooltip from '@mui/material/Tooltip';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Menu, MenuItem } from '@mui/material';
 import Container from '@mui/material/Container';
-import { useSignOut } from './server';
+import { useSignOut } from './firebaseConfig';
 import Button from '@mui/material/Button';
 import HandleCalls from './HandleCalls';
 

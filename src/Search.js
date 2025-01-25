@@ -3,7 +3,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { collection, query, where, getDoc, getDocs ,doc, setDoc, serverTimestamp, updateDoc} from 'firebase/firestore';
 import { Box, ListItem, ListItemText } from '@mui/material';
 import { useContext, useState } from 'react';
-import { db } from './server';
+import { db } from './firebaseConfig';
 import List from '@mui/material/List';
 import { AuthContext } from './context';
 import {InputAdornment} from '@mui/material';
