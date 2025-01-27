@@ -40,7 +40,7 @@ const Messages = () => {
     }
 
     return (
-        <div >
+        <div className = "chat-container">
 
             {messages?.map((msg, index) => (
                 <Message key={index} message={msg} /> // Added unique key

@@ -1,7 +1,7 @@
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import { collection, query, where, getDoc, getDocs ,doc, setDoc, serverTimestamp, updateDoc} from 'firebase/firestore';
-import { Box, ListItem, ListItemText } from '@mui/material';
+import { Box, Divider, ListItem, ListItemText } from '@mui/material';
 import { useContext, useState } from 'react';
 import { db } from './firebaseConfig';
 import List from '@mui/material/List';
@@ -86,8 +86,8 @@ const Search = () => {
     };
 
     return (
-        <Box>
-            <TextField sx={{ top: 60, width: '80%', color: 'primary' }} label="Enter email" size="small" id="fullWidth"  InputProps={{
+        <Box sx={{padding: 1}} >
+            <TextField sx={{ top: -4, width: '80%', color: 'primary'}} label="Enter email" size="small" id="fullWidth"  InputProps={{
         endAdornment: (
           <InputAdornment position="end">
             <SearchIcon sx={{ color: 'black' }} />

@@ -53,14 +53,9 @@ const Input = () => {
     return (
         <Box 
         component="div" 
-        sx={{ 
-            position: 'fixed',
-            bottom: 0,
-            right: 156,
-            padding: '10px',
-            width: '60%',
-          
-        }}
+        width={"60%"}
+        
+
     >
         <form onSubmit={sendMessage} style={{ display: 'flex', gap: '8px' }}>
             <TextField
@@ -68,11 +63,13 @@ const Input = () => {
                 value={formValue}
                 onChange={(e) => setFormValue(e.target.value)}
                 placeholder="Type a message..."
+                
                 sx={{
                     flex: 1,
                     '& .MuiOutlinedInput-root': {
                         backgroundColor: 'white',
-                    }
+                    },
+                    
                 }}
             />
             <Button 

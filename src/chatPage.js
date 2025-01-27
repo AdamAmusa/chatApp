@@ -1,12 +1,14 @@
-import { Box, Button, Card, Menu, Typography,IconButton, MenuItem, Drawer} from '@mui/material';
-import Search from './Search';
+
+import { AppBar, Box, Button, Drawer, IconButton, Toolbar,styled} from '@mui/material';
 import ChatList from './chatList';
 import Messages from './Messages';
 import Input from './Input';
 import React, { useState } from 'react';
 import TopBar from './topbar';
-import { AccountCircle } from '@mui/icons-material';
+import Profile from './Profile';
 import { useSignOut } from './Authentication';
+import { InsertPhoto } from '@mui/icons-material';
+
 
 const sidebarWidth = 300;
 
@@ -21,84 +23,74 @@ const ChatPage = () => {
     const handleClose = () => {
         setAnchorEl(null);
         //signout
-      };
+    };
 
     const closeandSignOut = () => {
         handleClose();
         signOutUser();
     }
 
+    const VisuallyHiddenInput = styled('input')({
+        clip: 'rect(0 0 0 0)',
+        clipPath: 'inset(50%)',
+        height: 1,
+        overflow: 'hidden',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        whiteSpace: 'nowrap',
+        width: 1,
+    });
+
     return (
 
         <Box sx={{ display: "flex", width: "100vw" }}>
 
-            <TopBar />
+
 
             <Drawer
                 variant="permanent"
                 sx={{
                     display: { xs: 'none', sm: 'block' },
+                    width: sidebarWidth,
+                    flexShrink: 0,
                     '& .MuiDrawer-paper': { boxSizing: 'border-box', width: sidebarWidth },
+
                 }}
                 open
             >
-                <Typography variant="h4" sx={{ p: 1 }}>
-                    Messages
-                </Typography>
+
                 <div>
-                    <Search />
                     <ChatList />
-                    <Card
-                        sx={{
-                            position: 'fixed',
-                            bottom: 0,
-                            left: 0,
-                            backgroundColor: '#f9f9f9',
-                            width: sidebarWidth - 1,
-                            height: '80px',
-                        }}
-                    >
-                        <Box sx={{ display: 'flex', justifyContent: 'start', alignItems: 'flex-end', height: '100%' }}>
-                            <IconButton sx={{}}
-                                size="large"
-                                aria-label="account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                onClick={handleMenu}
-                                color="inherit"
-                            >
-                                <AccountCircle sx={{fontSize: "50px"}} />
-                            </IconButton>
-                            
-                            <Menu
-                                id="menu-appbar"
-                                anchorEl={anchorEl}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(anchorEl)}
-                                onClose={handleClose}
-                            >
-                                <MenuItem onClick={closeandSignOut}>Logout</MenuItem>
-                            </Menu>
-                        </Box>
-                    </Card>
+                    <Profile sidebarWidth={sidebarWidth} />
                 </div>
+
             </Drawer>
 
+
             {/* Message list and input section */}
-            <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${sidebarWidth * 2}px)` }, paddingTop: 10 }}>
-
+            <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${sidebarWidth * 2}px)` }, pt: 10, pb: 10 }}>
+                <TopBar />
                 <Messages />
-                <Input />
-
-                
+                <AppBar position='fixed' color="inherit" sx={{ top: 'auto', bottom: 0, height: '80px' }}>
+                    <Toolbar sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', height: '100%' }}>
+                        <Input />
+                        <IconButton
+                            component="label"
+                            role={undefined}
+                            variant="contained"
+                            tabIndex={-1}
+                            target='file'
+                        >      
+                            <InsertPhoto sx={{fontSize: "4vh"}}/>          
+                            <VisuallyHiddenInput
+                                type="file"
+                                onChange={(event) => console.log(event.target.files)}
+                                multiple
+                            />
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
             </Box>
 
 

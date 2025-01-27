@@ -63,7 +63,7 @@ export const HandleCalls = () => {
         </Box>}
 
       <IconButton sx={{ p: 0 }} onClick={useMakeCall()}>
-        <VideoCallIcon sx={{ fontSize: "4.5vh", color: "white" }} />
+        <VideoCallIcon sx={{ fontSize: "4.5vh", color: "inherit" }} />
       </IconButton>
     </div>
   );
