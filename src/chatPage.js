@@ -1,5 +1,5 @@
 
-import { AppBar, Box, Button, Drawer, IconButton, Toolbar,styled} from '@mui/material';
+import { AppBar, Box, Button, Drawer, IconButton, Toolbar, styled } from '@mui/material';
 import ChatList from './chatList';
 import Messages from './Messages';
 import Input from './Input';
@@ -30,17 +30,7 @@ const ChatPage = () => {
         signOutUser();
     }
 
-    const VisuallyHiddenInput = styled('input')({
-        clip: 'rect(0 0 0 0)',
-        clipPath: 'inset(50%)',
-        height: 1,
-        overflow: 'hidden',
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        whiteSpace: 'nowrap',
-        width: 1,
-    });
+   
 
     return (
 
@@ -75,20 +65,6 @@ const ChatPage = () => {
                 <AppBar position='fixed' color="inherit" sx={{ top: 'auto', bottom: 0, height: '80px' }}>
                     <Toolbar sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', height: '100%' }}>
                         <Input />
-                        <IconButton
-                            component="label"
-                            role={undefined}
-                            variant="contained"
-                            tabIndex={-1}
-                            target='file'
-                        >      
-                            <InsertPhoto sx={{fontSize: "4vh"}}/>          
-                            <VisuallyHiddenInput
-                                type="file"
-                                onChange={(event) => console.log(event.target.files)}
-                                multiple
-                            />
-                        </IconButton>
                     </Toolbar>
                 </AppBar>
             </Box>
