@@ -3,7 +3,7 @@ import { AppBar, Box, Button, Drawer, IconButton, Toolbar, styled } from '@mui/m
 import ChatList from './chatList';
 import Messages from './Messages';
 import Input from './Input';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TopBar from './topbar';
 import Profile from './Profile';
 import { useSignOut } from './Authentication';
@@ -16,10 +16,6 @@ const ChatPage = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const signOutUser = useSignOut();
 
-
-    const handleMenu = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
     const handleClose = () => {
         setAnchorEl(null);
         //signout
@@ -29,6 +25,9 @@ const ChatPage = () => {
         handleClose();
         signOutUser();
     }
+
+
+    
 
    
 

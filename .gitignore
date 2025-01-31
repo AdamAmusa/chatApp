@@ -24,3 +24,4 @@ yarn-error.log*
 
 # .gitignore
 /src/keys.env
+src/.env

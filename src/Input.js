@@ -8,6 +8,7 @@ import { v4 as uuid } from "uuid";
 import { AuthContext } from "./context";
 import { InsertPhoto, SentimentSatisfiedAltOutlined } from "@mui/icons-material";
 import EmojiPicker from "emoji-picker-react";
+import { uploadMedia } from "./MediaHandler";
 
 
 
@@ -36,17 +37,8 @@ const Input = () => {
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             const selectedFile = e.target.files[0];
-            const reader = new FileReader();
-    
-            // Set up the onload event handler
-            reader.onload = (event) => {
-                const base64String = event.target.result; // Base64-encoded string
-                setFile(base64String); // Update the state with the Base64 string
-                console.log(base64String); // Log the Base64 string
-            };
-    
-            // Start reading the file as a Data URL (Base64)
-            reader.readAsDataURL(selectedFile);
+            setFile(selectedFile);
+            uploadMedia(file);
         }
     }
 
