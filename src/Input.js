@@ -8,7 +8,7 @@ import { v4 as uuid } from "uuid";
 import { AuthContext } from "./context";
 import { InsertPhoto, SentimentSatisfiedAltOutlined } from "@mui/icons-material";
 import EmojiPicker from "emoji-picker-react";
-import { uploadMedia } from "./MediaHandler";
+
 
 
 
@@ -34,13 +34,26 @@ const Input = () => {
         };
     }, []);
 
+    const uploadFile = (selectedFile) => {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        fetch('api/upload', {
+            method: 'POST',
+            body: formData
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            console.log(data);
+        });
+    };
+
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             const selectedFile = e.target.files[0];
             setFile(selectedFile);
-            uploadMedia(file);
+            uploadFile(file);
         }
-    }
+    };
 
      const VisuallyHiddenInput = styled('input')({
             clip: 'rect(0 0 0 0)',
