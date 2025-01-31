@@ -16,8 +16,6 @@ export const uploadMedia = async (file, width, height) => {
         ]
     });
 
-
-
 }
 
 
