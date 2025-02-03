@@ -28,10 +28,6 @@ const ChatPage = () => {
 
 
     
-      
-
-   
-
     return (
 
         <Box sx={{ display: "flex", width: "100vw" }}>

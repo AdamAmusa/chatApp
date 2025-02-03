@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Box, IconButton, Menu, MenuItem, Card } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
-import { useSignOut } from "react-firebase-hooks/auth";
+import { auth } from "./firebaseConfig"; // Ensure you import your Firebase auth instance
+import { useSignOut } from "./Authentication";
+
 
 
 const Profile = ({ sidebarWidth }) => {
     const [anchorEl, setAnchorEl] = useState(null);
-    const signOutUser = useSignOut();
-
+    const [signOut, error] = useSignOut();
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -17,9 +18,9 @@ const Profile = ({ sidebarWidth }) => {
         //signout
       };
 
-    const closeandSignOut = () => {
+    const closeandSignOut = async () => {
         handleClose();
-        signOutUser();
+        await signOut();
     }
     return(
         <Card

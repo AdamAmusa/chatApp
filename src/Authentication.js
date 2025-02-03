@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { setDoc, doc } from 'firebase/firestore';
 import { auth, db } from './firebaseConfig';
 
-const signUpUser = async (email, password, displayName) => {
+export const signUpUser = async (email, password, displayName) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
@@ -40,7 +40,7 @@ const signUpUser = async (email, password, displayName) => {
         }
     };
     
-    const signInUser = async (email, password) => {
+   export const signInUser = async (email, password) => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
@@ -64,7 +64,7 @@ const signUpUser = async (email, password, displayName) => {
         }
     };
     
-    const usesignInGoogle = async () => {
+    export const usesignInGoogle = async () => {
 
         const provider = new GoogleAuthProvider();
         try {
@@ -79,7 +79,7 @@ const signUpUser = async (email, password, displayName) => {
     }
     
     
-    const useFetch = () => {
+    export const useFetch = () => {
         const [user] = useAuthState(auth);
         const navigate = useNavigate();
 
@@ -95,7 +95,7 @@ const signUpUser = async (email, password, displayName) => {
         }, [user]);
     };
     
-    const useSignOut = () => {
+    export const useSignOut = () => {
         const navigate = useNavigate();
 
         const signOutUser = async () => {
@@ -107,4 +107,3 @@ const signUpUser = async (email, password, displayName) => {
         return signOutUser;
     }
 
-export { signUpUser, signInUser, usesignInGoogle, useFetch, useSignOut };

@@ -27,7 +27,6 @@ const Input = () => {
                 setIsEmojiOpened(false);
             }
         };
-
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
@@ -37,6 +36,11 @@ const Input = () => {
     const uploadFile = (selectedFile) => {
         const formData = new FormData();
         formData.append('file', selectedFile);
+        formData.append('senderId', currentUser.uid);
+        formData.append('date', Timestamp.now());
+        formData.append('id', uuid());
+        formData.append('db', db);
+        formData.append('chatId', data.chatId);
         fetch('api/upload', {
             method: 'POST',
             body: formData
@@ -52,6 +56,7 @@ const Input = () => {
             const selectedFile = e.target.files[0];
             setFile(selectedFile);
             uploadFile(file);
+
         }
     };
 
