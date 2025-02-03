@@ -53,8 +53,7 @@ const Input = () => {
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             const selectedFile = e.target.files[0];
-            setFile(selectedFile);
-            uploadFile(file);
+            uploadFile(selectedFile);
 
         }
     };
