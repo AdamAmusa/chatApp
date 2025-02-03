@@ -6,7 +6,6 @@ import ChatPage from './chatPage';
 import { AuthContext } from './context';
 import { useContext } from 'react';
 import VideoCall from './videoCall';
-import { DashboardLayout } from '@toolpad/core';
 import { ProtectedRoutes } from './ProtectedRoutes';
 
 function App() {
@@ -19,7 +18,8 @@ function App() {
         <Router>
           <Routes>
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/login" element={<Login />} />   
+            <Route path="/login" element={<Login />} />
+
             <Route path='/chatpage' element={<ProtectedRoutes><ChatPage /></ProtectedRoutes>} />
             <Route path="/call" element={<ProtectedRoutes><VideoCall /></ProtectedRoutes>} />
             

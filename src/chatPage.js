@@ -6,28 +6,10 @@ import Input from './Input';
 import React, { useEffect, useState } from 'react';
 import TopBar from './topbar';
 import Profile from './Profile';
-import { useSignOut } from './Authentication';
-import { InsertPhoto } from '@mui/icons-material';
-
 
 const sidebarWidth = 300;
 
-const ChatPage = () => {
-    const [anchorEl, setAnchorEl] = useState(null);
-    const signOutUser = useSignOut();
-
-    const handleClose = () => {
-        setAnchorEl(null);
-        //signout
-    };
-
-    const closeandSignOut = () => {
-        handleClose();
-        signOutUser();
-    }
-
-
-    
+const ChatPage = () => {    
     return (
 
         <Box sx={{ display: "flex", width: "100vw" }}>

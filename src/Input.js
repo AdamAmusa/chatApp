@@ -39,7 +39,6 @@ const Input = () => {
         formData.append('senderId', currentUser.uid);
         formData.append('date', Timestamp.now());
         formData.append('id', uuid());
-        formData.append('db', db);
         formData.append('chatId', data.chatId);
         fetch('api/upload', {
             method: 'POST',
