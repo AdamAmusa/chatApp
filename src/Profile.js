@@ -8,7 +8,7 @@ import { useSignOut } from "./Authentication";
 
 const Profile = ({ sidebarWidth }) => {
     const [anchorEl, setAnchorEl] = useState(null);
-    const [signOut, error] = useSignOut();
+    const signOut = useSignOut();
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);

@@ -19,8 +19,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/login" element={<Login />} />
-        
+            <Route path="/login" element={<Login />} />   
             <Route path='/chatpage' element={<ProtectedRoutes><ChatPage /></ProtectedRoutes>} />
             <Route path="/call" element={<ProtectedRoutes><VideoCall /></ProtectedRoutes>} />
             
