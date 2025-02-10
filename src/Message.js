@@ -3,22 +3,32 @@ import { ChatContext } from "./ChatContext";
 import { AuthContext } from "./context";
 import { Paper, Box, Typography, Avatar } from "@mui/material";
 
-const Message = ({ message }) => {
+const Message = ({ message, type }) => {
     const { currentUser } = useContext(AuthContext);
     const { data } = useContext(ChatContext);
-    
+
     const isSender = message?.senderId === currentUser?.uid;
 
     // Enhanced timestamp formatting
     const formatDateTime = (timestamp) => {
         if (!timestamp) return '';
-        
-        const messageDate = timestamp.toDate();
+
+        let messageDate;
+        if (timestamp.toDate) {
+            // Firestore Timestamp object
+            messageDate = timestamp.toDate();
+        } else if (timestamp instanceof Date) {
+            // JavaScript Date object
+            messageDate = timestamp;
+        } else {
+            // Assume it's a date string
+            messageDate = new Date(timestamp);
+        }
         const today = new Date();
-        
+
         // Check if the message was sent today
         const isToday = messageDate.toDateString() === today.toDateString();
-        
+
         if (isToday) {
             // If message is from today, show only time
             return messageDate.toLocaleTimeString('en-UK', {
@@ -68,7 +78,7 @@ const Message = ({ message }) => {
                     }}
                 />
             )}
-            
+
             <Box
                 sx={{
                     maxWidth: '70%',
@@ -87,14 +97,19 @@ const Message = ({ message }) => {
                         borderTopRightRadius: isSender ? '4px' : '16px',
                         borderTopLeftRadius: isSender ? '16px' : '4px',
                         wordBreak: 'break-word',
-                        maxWidth: '100%',
+                        maxWidth: 'auto',
                     }}
                 >
-                    <Typography variant="body1" fontSize={20}>
-                        {message.message}
-                    </Typography>
+                    {type === 'text' && (
+                        <Typography variant="body1" fontSize={20}>
+                            {message.message}
+                        </Typography>
+                    )}
+                    {type === 'image' && (
+                        <img src={message.image_url} alt="Uploaded" style={{ maxWidth: '100%' }} />
+                    )}
                 </Paper>
-                
+
                 <Typography
                     variant="caption"
                     color="text.secondary"
