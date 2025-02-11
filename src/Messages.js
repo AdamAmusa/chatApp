@@ -8,6 +8,7 @@ const Messages = () => {
     const { data } = useContext(ChatContext);
     const [messages, setMessages] = useState([]);
     const [images, setImages] = useState([]);
+    const [combinedMessages, setCombinedMessages] = useState([]);
 
 
     const autoscroll = useRef();
@@ -16,24 +17,30 @@ const Messages = () => {
         if (autoscroll.current) {
             autoscroll.current.scrollIntoView({ behavior: 'smooth' });
         }
-    }, [messages]);
+    }, [combinedMessages]);
 
     useEffect(() => {
         if (data && data.chatId) {
-            console.log("Pressed" + data.chatId);
+            console.log("Pressed " + data.chatId);
 
             const unsub = onSnapshot(doc(db, "messages", data.chatId), (snapshot) => {
                 if (snapshot.exists()) {
-                    const messagesData = snapshot.data().messages;
-                    const imageData = snapshot.data().images;
+                    const messagesData = snapshot.data().messages || [];
+                    const imagesData = snapshot.data().images || [];
                     setMessages(messagesData);
-                    setImages(imageData);
-                }
+                    setImages(imagesData);
 
+                    // Combine and sort messages and images by date
+                    const combinedData = [...messagesData, ...imagesData].sort((a, b) => {
+                        return a.date.seconds - b.date.seconds;
+                    });
+                    setCombinedMessages(combinedData);
+                }
             });
+
             return () => {
                 unsub();
-            }
+            };
         }
     }, [data.chatId]);
 
@@ -44,11 +51,8 @@ const Messages = () => {
     return (
         <div className = "chat-container">
 
-            {messages?.map((msg, index) => (
-                <Message key={index} message={msg} type="text"/> // Added unique key
-            ))}
-             {images?.map((img, index) => (
-                <Message key={index} message={img} type="image"/>
+    {combinedMessages.map((msg, index) => (
+                <Message key={index} message={msg} type={msg.image_url ? "image" : "text"} />
             ))}
 
             <div ref={autoscroll}></div>
