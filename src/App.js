@@ -7,6 +7,7 @@ import { AuthContext } from './context';
 import { useContext } from 'react';
 import VideoCall from './videoCall';
 import { ProtectedRoutes } from './ProtectedRoutes';
+import { Navigate } from 'react-router-dom';
 
 function App() {
 
@@ -19,10 +20,9 @@ function App() {
           <Routes>
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
-
+            <Route path="/" element={currentUser ? <Navigate to="/chatpage" /> : <Navigate to="/login" />} />
             <Route path='/chatpage' element={<ProtectedRoutes><ChatPage /></ProtectedRoutes>} />
             <Route path="/call" element={<ProtectedRoutes><VideoCall /></ProtectedRoutes>} />
-            
           </Routes>
         </Router>
       </header>
