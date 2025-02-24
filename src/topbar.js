@@ -7,6 +7,7 @@ import Tooltip from '@mui/material/Tooltip';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Search from './Search';
 import HandleCalls from './HandleCalls';
+import { Avatar } from '@mui/material';
 
 const TopBar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -31,7 +32,7 @@ const TopBar = () => {
             </Tooltip>
 
             <IconButton sx={{ p: 0, ml: 3, mr: 2 }}>
-              <AccountCircleIcon sx={{ fontSize: "4vh", color: "inherit" }} />
+              <Avatar sx={{ width: 32, height: 32 }} />
             </IconButton>
 
           </Box>

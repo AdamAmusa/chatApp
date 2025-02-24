@@ -1,5 +1,5 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Box, Divider, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Avatar, Box, Divider, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useContext, useState, useEffect, useRef } from 'react';
 import { onSnapshot, doc } from 'firebase/firestore';
 import { AuthContext } from './context';
@@ -35,19 +35,21 @@ const ChatList = () => {
 
     console.log(Object.entries(chatList));
     return (
-        <Box>
+        <Box >
             
             <List sx={{ width: "100%", top: 80 }}>
                 {Object.entries(chatList)?.map((chat) => (
-                    <ListItemButton onClick={() => handleSelect(chat[1].userInfo)} sx={{height:"3vw"}}>
-                <ListItem disablePadding key={chat[0]}>
-                    <Box sx={{ display: "flex", alignItems: "center", width:"100%", height:20}}>
-                        <AccountCircleIcon sx={{fontSize: "auto", color:"inherit"}} />
+                   
+                <ListItem disablePadding key={chat[0]} sx={{justifyContent: 'center', pb:1}}>
+                     <ListItemButton onClick={() => handleSelect(chat[1].userInfo)} sx={{height:"3vw"}}>
+                    <Box sx={{ display: "flex", alignItems: "center", width:"100%"}}>
+                        <Avatar sx={{width:30, height:30, color:"inherit"}} />
                         <p style={{color:'inherit',  marginLeft: "18px", fontSize:"20px"}}>{chat[1].userInfo.displayName}</p>
-                    </Box>             
+                    </Box>
+                    </ListItemButton>             
                 </ListItem>
                 
-                </ListItemButton>
+                
                 
             ))}
             <Divider />

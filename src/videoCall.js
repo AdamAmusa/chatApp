@@ -1,11 +1,27 @@
-import React, { useRef, useEffect } from 'react';
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import React, { useRef, useEffect, useState } from 'react';
+import { Avatar, Box, Card, CardContent, IconButton } from '@mui/material';
 import { useMediaStream } from './MediaStreamContext';
+import CallEndRoundedIcon from '@mui/icons-material/CallEndRounded';
+import MicRoundedIcon from '@mui/icons-material/MicRounded';
+import VideocamRoundedIcon from '@mui/icons-material/VideocamRounded';
+import ClosedCaptionDisabledOutlinedIcon from '@mui/icons-material/ClosedCaptionDisabledOutlined';
+import ClosedCaptionOffOutlinedIcon from '@mui/icons-material/ClosedCaptionOffOutlined';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
-const VideoCall = () => { 
+import VideocamOffIcon from '@mui/icons-material/VideocamOff';
+import MicOffIcon from '@mui/icons-material/MicOff';
+
+const VideoCall = () => {
     const { localStream, remoteStream } = useMediaStream();
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
+
+    const [micOn, setMicOn] = useState(true);
+    const [videoOn, setVideoOn] = useState(true);
+
+    const [isMuted, setIsMuted] = useState(false);
+    const [isCaptioned, setIsCaptioned] = useState(false);
 
     useEffect(() => {
         if (localVideoRef.current && localStream) {
@@ -14,7 +30,7 @@ const VideoCall = () => {
             localVideoRef.current.srcObject = localStream;
         }
     }, [localStream]);
-    
+
     useEffect(() => {
         if (remoteVideoRef.current && remoteStream) {
             console.log("Remote Stream is ", remoteStream);
@@ -26,43 +42,135 @@ const VideoCall = () => {
     return (
         <Box
             component="ul"
-            sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', p: 0, m: 0 }}
-        >
-            <Card component="li" sx={{ minWidth: 300, flexGrow: 1 }}>
-                <CardContent>
-                    <Typography variant="h6">Local Video</Typography>
-                    {console.log("Local Video here  " + localStream)}
-                    {
-                    localStream ? (
-                        <video 
-                            ref={localVideoRef} 
-                            autoPlay 
-                            playsInline 
-                            style={{ width: '100%', maxHeight: '400px' }}
-                        />
-                    ) : (
-                        <Typography>No local stream available</Typography>
-                    )}
-                </CardContent>
-            </Card>
+            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, p: 0, m: 0 }}>
 
-            <Card component="li" sx={{ minWidth: 300, flexGrow: 1 }}>
-                <CardContent>
-                    <Typography variant="h6">Remote Video</Typography>
-                    {console.log("Remote Video here  " + remoteStream)}
-                    {
-                    remoteStream && remoteStream.getTracks().length > 0 ? (
-                        <video 
-                            ref={remoteVideoRef} 
-                            autoPlay 
-                            playsInline 
-                            style={{ width: '100%', maxHeight: '400px' }}
-                        />
-                    ) : (
-                        <Typography>No remote stream available</Typography>
-                    )}
-                </CardContent>
-            </Card>
+            <Box sx={{ display: 'flex', gap: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <Card component="li" sx={{ minWidth: 500, minHeight: 300, flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
+                    <CardContent>
+                        {console.log("Local Video here  " + localStream)}
+                        {
+                            localStream ? (
+                                <video
+                                    ref={localVideoRef}
+                                    autoPlay
+                                    playsInline
+                                    style={{ width: '100%', maxHeight: '400px' }}
+                                />
+                            ) : (
+                                <Avatar sx={{ width: 80, height: 80 }}></Avatar>
+                            )}
+                    </CardContent>
+                </Card>
+                <Card component="li" sx={{ minWidth: 500, minHeight: 300, flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
+                    <CardContent>
+                        <Box>
+                            {console.log("Remote Video here  " + remoteStream)}
+
+                            {
+                                remoteStream && remoteStream.getTracks().length > 0 ? (
+                                    <video
+                                        ref={remoteVideoRef}
+                                        autoPlay
+                                        playsInline
+                                        style={{ width: '100%', maxHeight: '400px' }}
+                                    />
+                                ) : (
+                                    <Avatar sx={{ width: 80, height: 80 }}></Avatar>)}
+                        </Box>
+                    </CardContent>
+                    <Box sx={{ position: 'absolute', bottom: 8, right: 8, display: 'flex', gap: 1 }}>
+                        {
+                            !isCaptioned && (
+                                <IconButton onClick={() => setIsCaptioned(!isCaptioned)}>
+                                    <ClosedCaptionDisabledOutlinedIcon />
+                                </IconButton>
+                            )
+                        }
+                        {
+                            isCaptioned && (
+                                <IconButton onClick={() => setIsCaptioned(!isCaptioned)}>
+                                    <ClosedCaptionOffOutlinedIcon />
+                                </IconButton>
+                            )
+                        }
+                        {
+                            !isMuted && (
+                                <IconButton onClick={() => setIsMuted(!isMuted)}>
+                                    <VolumeUpIcon />
+                                </IconButton>
+                            )
+
+                        }
+                        {
+                            isMuted && (
+                                <IconButton onClick={() => setIsMuted(!isMuted)}>
+                                    <VolumeOffIcon />
+                                </IconButton>
+                            )
+                        }
+
+
+
+                    </Box>
+                </Card>
+
+            </Box>
+            <Box sx={{ display: 'flex', gap: 3, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%', position: 'fixed', bottom: 3 }}>
+
+
+
+                {
+                    micOn && (
+                        <Box sx={{ backgroundColor: 'grey', borderRadius: '50%' }}>
+                            <IconButton aria-label="mic" onClick={() => setMicOn(!micOn)}>
+                                <MicRoundedIcon sx={{ fontSize: 42, color: 'white' }} />
+                            </IconButton>
+                        </Box>
+                    )
+                }
+                
+                {
+                    !micOn && (
+                        <Box sx={{ backgroundColor: 'grey', borderRadius: '50%' }}>
+                            <IconButton aria-label="mic" onClick={() => setMicOn(!micOn)}>
+                                <MicOffIcon sx={{ fontSize: 42, color: 'white' }} />
+                            </IconButton>
+                        </Box>
+                    )
+                }
+
+                {
+                    videoOn && (
+                        <Box sx={{ backgroundColor: 'grey', borderRadius: '50%' }}>
+                            <IconButton aria-label="mic" onClick={() => setVideoOn(!videoOn)}>
+                                <VideocamRoundedIcon sx={{ fontSize: 42, color: 'white' }} />
+                            </IconButton>
+                        </Box>
+                    )
+                }
+
+                {
+                    !videoOn && (
+                        <Box sx={{ backgroundColor: 'grey', borderRadius: '50%' }}>
+                            <IconButton aria-label="mic" onClick={() => setVideoOn(!videoOn)}>
+                                <VideocamOffIcon sx={{ fontSize: 42, color: 'white' }} />
+                            </IconButton>
+                        </Box>
+                    )
+                }
+
+                <Box sx={{ backgroundColor: 'red', borderRadius: '50%' }}>
+                    <IconButton aria-label="end call">
+                        <CallEndRoundedIcon sx={{ fontSize: 42, color: 'white' }} />
+                    </IconButton>
+                </Box>
+
+
+
+
+
+
+            </Box>
         </Box>
     );
 };
