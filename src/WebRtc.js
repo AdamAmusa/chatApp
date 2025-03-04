@@ -49,6 +49,37 @@ export const useCallStatus = () => {
 
 
 
+const addIceCandidates = async (iceCandidatesSnapshot, peerConnectionRef, iceCandidatesQueue) => {
+    iceCandidatesSnapshot.forEach(doc => {
+        const candidate = doc.data();
+        if (peerConnectionRef.current.signalingState === "stable") {
+            try {
+                console.log("Adding ICE candidate (Requester)", candidate);
+                peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+            } catch (e) {
+                console.error('Error adding received ice candidate', e);
+            }
+        } else {
+            console.log("Queueing ICE candidate", candidate);
+            iceCandidatesQueue.current.push(candidate);
+        }
+    });
+};
+
+const localStream = async (peerConnectionRef, setLocalStream) => { 
+        const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        setLocalStream(localStream);
+        if (peerConnectionRef.current) {
+            localStream.getTracks().forEach(track => {
+                peerConnectionRef.current.addTrack(track, localStream);
+            });
+        } else {
+            console.error("PeerConnection is not initialized");
+        }
+};
+
+
+
 
 export const useMakeCall = () => {
     const navigate = useNavigate();
@@ -66,17 +97,7 @@ export const useMakeCall = () => {
 
         peerConnectionRef.current = new RTCPeerConnection(configuration);
 
-        try {
-            const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            setLocalStream(localStream);
-            localStream.getTracks().forEach(track => {
-                peerConnectionRef.current.addTrack(track, localStream);
-            });
-        } catch (error) {
-            console.error("Error accessing media devices:", error);
-            alert("Error accessing media devices: " + error.message);
-            return;
-        }
+        await localStream(peerConnectionRef, setLocalStream);
 
         const signalingDoc = doc(db, `signaling/${currentUser.uid}`);
         const roomSnapshot = await getDoc(signalingDoc);
@@ -147,20 +168,7 @@ export const useMakeCall = () => {
             // Query the iceCandidates subcollection
             const iceCandidatesCollection = collection(signalingDoc, 'iceCandidates');
             const iceCandidatesSnapshot = await getDocs(iceCandidatesCollection);
-            iceCandidatesSnapshot.forEach(doc => {
-                const candidate = doc.data();
-                if (peerConnectionRef.current.signalingState === "stable") {
-                    try {
-                        console.log("Adding ICE candidate (Requester)", candidate);
-                        peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate));
-                    } catch (e) {
-                        console.error('Error adding received ice candidate', e);
-                    }
-                } else {
-                    console.log("Queueing ICE candidate", candidate);
-                    iceCandidatesQueue.current.push(candidate);
-                }
-            });
+            addIceCandidates(iceCandidatesSnapshot, peerConnectionRef, iceCandidatesQueue);
         });
 
 
@@ -183,19 +191,7 @@ export const useReceiveCall = () => {
     const receiveCall = async () => {
         peerConnectionRef.current = new RTCPeerConnection(configuration);
 
-        try {
-            const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            console.log("Local track is " + localStream);
-            setLocalStream(localStream);
-            localStream.getTracks().forEach(track => {
-                console.log('Add a track to the peer connection:', track);
-                peerConnectionRef.current.addTrack(track, localStream);
-            });
-        } catch (error) {
-            console.error("Error accessing media devices:", error);
-            alert("Error accessing media devices: " + error.message);
-            return;
-        }
+        await localStream(peerConnectionRef, setLocalStream);
 
         const signalingDoc = doc(db, `signaling/${currentUser.uid}`);
         onSnapshot(signalingDoc, async snapshot => {
@@ -226,21 +222,7 @@ export const useReceiveCall = () => {
             }
 
             const iceCandidatesSnapshot = await getDocs(iceCandidates);
-            iceCandidatesSnapshot.forEach(doc => {
-                const candidate = doc.data();
-                console.log("Received ICE candidate", candidate);
-                if (peerConnectionRef.current.signalingState === "stable") {
-                    try {
-                        console.log("Adding ICE candidate", candidate);
-                        peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate));
-                    } catch (e) {
-                        console.error('Error adding received ice candidate', e);
-                    }
-                } else {
-                    console.log("Queueing ICE candidate", candidate);
-                    iceCandidatesQueue.current.push(candidate);
-                }
-            });
+            addIceCandidates(iceCandidatesSnapshot, peerConnectionRef, iceCandidatesQueue);
         });
 
         peerConnectionRef.current.ontrack = event => {
