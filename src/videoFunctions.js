@@ -1,13 +1,32 @@
 import { Box, IconButton } from "@mui/material"
 import { ClosedCaptionDisabledOutlined, VolumeUp, VolumeOff, ClosedCaptionOutlined } from "@mui/icons-material"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
+import { useMediaStream } from "./MediaStreamContext";
+
+
+
 
 
 const VideoFunctions = ({stream}) => {
     const [isMuted, setIsMuted] = useState(false);
     const [isCaptioned, setIsCaptioned] = useState(false);
     const[transcript, setTranscript] = useState("");
-
+    const {peerConnectionRef} = useMediaStream();
+    
+    const toggleMute = () => {
+        if (peerConnectionRef.current) {
+            const senders = peerConnectionRef.current.getSenders();
+            const audioSenders = senders.filter(sender => 
+                sender.track && sender.track.kind === 'audio'
+            );
+            audioSenders.forEach(sender => {
+                if (sender.track) {
+                    sender.track.enabled = isMuted;
+                }
+            });
+        }
+        setIsMuted(!isMuted);
+    }
 
     //captioning
     useEffect(() => {
@@ -87,16 +106,17 @@ const VideoFunctions = ({stream}) => {
                     </IconButton>
                 )
             }
-            {
+            
+           {
                 !isMuted && (
-                    <IconButton onClick={() => setIsMuted(!isMuted)}>
+                    <IconButton onClick={toggleMute}>
                         <VolumeUp />
                     </IconButton>
                 )
             }
             {
                 isMuted && (
-                    <IconButton onClick={() => setIsMuted(!isMuted)}>
+                    <IconButton onClick={toggleMute}>
                         <VolumeOff />
                     </IconButton>
                 )

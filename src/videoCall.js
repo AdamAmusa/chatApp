@@ -42,6 +42,15 @@ const VideoCall = () => {
         }
     }, [remoteStream]);
 
+    const toggleMic = () => {
+        if (localStream) {
+            localStream.getAudioTracks().forEach((track) => {
+                track.enabled = !micOn; // Toggle the enabled property
+            });
+        }
+        setMicOn(!micOn); // Update the state
+    };
+
     return (
         <Box
             component="ul"
@@ -87,12 +96,10 @@ const VideoCall = () => {
             </Box>
             <Box sx={{ display: 'flex', gap: 3, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%', position: 'fixed', bottom: 3 }}>
 
-
-
                 {
                     micOn && (
                         <Box sx={{ backgroundColor: 'grey', borderRadius: '50%' }}>
-                            <IconButton aria-label="mic" onClick={() => setMicOn(!micOn)}>
+                            <IconButton aria-label="mic" onClick={toggleMic}>
                                 <MicRoundedIcon sx={{ fontSize: 42, color: 'white' }} />
                             </IconButton>
                         </Box>
@@ -102,7 +109,7 @@ const VideoCall = () => {
                 {
                     !micOn && (
                         <Box sx={{ backgroundColor: 'grey', borderRadius: '50%' }}>
-                            <IconButton aria-label="mic" onClick={() => setMicOn(!micOn)}>
+                            <IconButton aria-label="mic" onClick={toggleMic}>
                                 <MicOffIcon sx={{ fontSize: 42, color: 'white' }} />
                             </IconButton>
                         </Box>
