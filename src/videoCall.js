@@ -11,11 +11,14 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
 import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 import MicOffIcon from '@mui/icons-material/MicOff';
+import VideoFunctions from './videoFunctions';
+import { useEndCall } from './WebRtc';
 
 const VideoCall = () => {
     const { localStream, remoteStream } = useMediaStream();
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
+    const endCall = useEndCall();
 
     const [micOn, setMicOn] = useState(true);
     const [videoOn, setVideoOn] = useState(true);
@@ -78,40 +81,7 @@ const VideoCall = () => {
                                     <Avatar sx={{ width: 80, height: 80 }}></Avatar>)}
                         </Box>
                     </CardContent>
-                    <Box sx={{ position: 'absolute', bottom: 8, right: 8, display: 'flex', gap: 1 }}>
-                        {
-                            !isCaptioned && (
-                                <IconButton onClick={() => setIsCaptioned(!isCaptioned)}>
-                                    <ClosedCaptionDisabledOutlinedIcon />
-                                </IconButton>
-                            )
-                        }
-                        {
-                            isCaptioned && (
-                                <IconButton onClick={() => setIsCaptioned(!isCaptioned)}>
-                                    <ClosedCaptionOffOutlinedIcon />
-                                </IconButton>
-                            )
-                        }
-                        {
-                            !isMuted && (
-                                <IconButton onClick={() => setIsMuted(!isMuted)}>
-                                    <VolumeUpIcon />
-                                </IconButton>
-                            )
-
-                        }
-                        {
-                            isMuted && (
-                                <IconButton onClick={() => setIsMuted(!isMuted)}>
-                                    <VolumeOffIcon />
-                                </IconButton>
-                            )
-                        }
-
-
-
-                    </Box>
+                   <VideoFunctions stream={remoteStream} />
                 </Card>
 
             </Box>
@@ -160,7 +130,7 @@ const VideoCall = () => {
                 }
 
                 <Box sx={{ backgroundColor: 'red', borderRadius: '50%' }}>
-                    <IconButton aria-label="end call">
+                    <IconButton aria-label="end call" onClick={endCall}>
                         <CallEndRoundedIcon sx={{ fontSize: 42, color: 'white' }} />
                     </IconButton>
                 </Box>

@@ -10,13 +10,15 @@ const MediaStreamContext = createContext({
 export const MediaStreamProvider = ({ children }) => {
     const [localStream, setLocalStream] = useState(null);
     const [remoteStream, setRemoteStream] = useState(null);
-
+    const [peerConnectionRef, setPeerConnectionRef] = useState(null);
     return (
         <MediaStreamContext.Provider value={{ 
             localStream, 
             setLocalStream, 
             remoteStream, 
-            setRemoteStream 
+            setRemoteStream,
+            peerConnectionRef,
+            setPeerConnectionRef 
         }}>
             {children}
         </MediaStreamContext.Provider>

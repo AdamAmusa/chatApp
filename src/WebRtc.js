@@ -21,20 +21,19 @@ export const useCallStatus = () => {
     const { currentUser } = useContext(AuthContext);
     const [callStatus, setCallStatus] = useState("idle");
 
-
-
-
-
     useEffect(() => {
         if (!currentUser) return;
 
         console.log("useCallStatus");
+
         const signalingDoc = doc(db, `signaling/${currentUser.uid}`);
         const unsubscribe = onSnapshot(signalingDoc, snapshot => {
             const message = snapshot.data();
             if (message && message.offer) {
+                console.log("Offer received");
                 setCallStatus("pending");
             } else {
+                console.log("No offer received");
                 setCallStatus("idle");
             }
         });
@@ -47,11 +46,60 @@ export const useCallStatus = () => {
     return [callStatus, setCallStatus];
 };
 
+export const useDeclineCall = () => {
+    const { currentUser } = useContext(AuthContext);
+    const declineCall = async () => {
+        if (!currentUser) return;
+        const signalingDoc = doc(db, `signaling/${currentUser.uid}`);
+        try {
+            console.log("Declining call");
+            await updateDoc(signalingDoc, { offer: null });
+        } catch (error) {
+            console.error("Error declining call:", error);
+        }
+    };
+
+    return declineCall;
+};
+
+export const useEndCall = () => {
+    const { currentUser } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const { peerConnectionRef } = useMediaStream();
+    const { data } = useContext(ChatContext);
+    console.log("useEndCall");
+    const endCall = async () => {
+        if (!currentUser) return;
+        console.log("currentUser:", currentUser);
+        console.log("data.user:", data?.user);
+        const signalingDoc = doc(db, `signaling/${currentUser.uid}`);
+        const receiverDoc = doc(db, `signaling/${data.user.uid}`);
+        try {
+            console.log("Ending call");
+            await updateDoc(signalingDoc, { offer: null, answer: null });
+            await updateDoc(receiverDoc, { offer: null, answer: null});
+            
+            if (peerConnectionRef.current) {
+                peerConnectionRef.current.close();
+                peerConnectionRef.current = null;
+            }
+            navigate("/chatpage");
+        } catch (error) {
+            console.error("Error ending call:", error);
+        }
+    };
+    return endCall;
+};
+
 
 
 const addIceCandidates = async (iceCandidatesSnapshot, peerConnectionRef, iceCandidatesQueue) => {
     iceCandidatesSnapshot.forEach(doc => {
         const candidate = doc.data();
+        if (!peerConnectionRef.current) {
+            console.error("PeerConnection is not initialized");
+            return;
+        }
         if (peerConnectionRef.current.signalingState === "stable") {
             try {
                 console.log("Adding ICE candidate (Requester)", candidate);
@@ -85,7 +133,7 @@ export const useMakeCall = () => {
     const navigate = useNavigate();
     const { currentUser } = useContext(AuthContext);
     const { data } = useContext(ChatContext);
-    const { setLocalStream, remoteStream, setRemoteStream } = useMediaStream();
+    const { setLocalStream, remoteStream, setRemoteStream, setPeerConnectionRef} = useMediaStream();
     const iceCandidatesQueue = useRef([]);
 
     const peerConnectionRef = useRef(null);
@@ -93,10 +141,14 @@ export const useMakeCall = () => {
 
     const makeCall = async () => {
         console.log("makeCall");
+        if (!data || !data.user) {
+            console.error("Receiver data is missing");
+            return;
+        }
         const receiverDoc = doc(db, `signaling/${data.user.uid}`);
 
         peerConnectionRef.current = new RTCPeerConnection(configuration);
-
+        setPeerConnectionRef(peerConnectionRef);
         await localStream(peerConnectionRef, setLocalStream);
 
         const signalingDoc = doc(db, `signaling/${currentUser.uid}`);
@@ -133,6 +185,7 @@ export const useMakeCall = () => {
             setRemoteStream(event.streams[0]);
         };
         const offer = await peerConnectionRef.current.createOffer();
+        
         await peerConnectionRef.current.setLocalDescription(offer);
         await setDoc(receiverDoc, {
             offer: {
@@ -143,7 +196,12 @@ export const useMakeCall = () => {
 
         onSnapshot(signalingDoc, async snapshot => {
             const data = snapshot.data();
+            
             if (data.answer) {
+                if (!peerConnectionRef.current) {
+                console.error("PeerConnection is not initialized");
+                return;
+            }
                 if (peerConnectionRef.current.signalingState === "have-local-offer") {
                     const remoteDesc = new RTCSessionDescription({
                         type: 'answer',
@@ -182,20 +240,28 @@ export const useMakeCall = () => {
 
 export const useReceiveCall = () => {
     const { currentUser } = useContext(AuthContext);
-    const { setLocalStream, setRemoteStream } = useMediaStream();
+    const { setLocalStream, setRemoteStream, setPeerConnectionRef } = useMediaStream();
     const peerConnectionRef = useRef(null);
     const navigate = useNavigate();
     const iceCandidatesQueue = useRef([]);
 
 
     const receiveCall = async () => {
+        if (!currentUser) {
+            console.error("Current user is not defined");
+            return;
+        }
         peerConnectionRef.current = new RTCPeerConnection(configuration);
-
+        setPeerConnectionRef(peerConnectionRef);
         await localStream(peerConnectionRef, setLocalStream);
 
         const signalingDoc = doc(db, `signaling/${currentUser.uid}`);
         onSnapshot(signalingDoc, async snapshot => {
             const message = snapshot.data();
+            if (!message || !message.offer || !peerConnectionRef.current) {
+                console.warn("No valid offer found in signaling document");
+                return;
+            }
             const senderDoc = doc(db, `signaling/${message.offer.sender}`);
             const iceCandidates = collection(senderDoc, 'iceCandidates');
             if (message && message.offer) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { CardContent, CardHeader, IconButton } from '@mui/material';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
-import { useCallStatus, useMakeCall, useReceiveCall } from './WebRtc';
+import { useCallStatus, useDeclineCall, useMakeCall, useReceiveCall } from './WebRtc';
 import Card from '@mui/material/Card';
 import CallIcon from '@mui/icons-material/Call';
 import CallEndIcon from '@mui/icons-material/CallEnd';
@@ -24,6 +24,7 @@ const CallStatus = {
 export const HandleCalls = () => {
   const [callStatus, setCallStatus] = useCallStatus();
   const receiveCall = useReceiveCall();
+  const declineCall = useDeclineCall();
   return (
     <div>
       {callStatus === CallStatus.PENDING
@@ -55,7 +56,7 @@ export const HandleCalls = () => {
               <IconButton sx={{ p: 0 }} onClick={receiveCall}>
               <CallIcon sx={{ fontSize: "3vh", color: "green"}} />
               </IconButton>
-              <IconButton sx={{ p: 0 }}>
+              <IconButton sx={{ p: 0 }} onClick={declineCall}>
               <CallEndIcon sx={{ fontSize: "3vh", color: "red" }} />
               </IconButton>
             </CardContent>
