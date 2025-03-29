@@ -4,19 +4,37 @@ import { useEffect, useState, useRef } from "react"
 import { useMediaStream } from "./MediaStreamContext";
 
 
+export const useToggleVideo = () => {
+    const { peerConnectionRef, isVideoOff, setIsVideoOff} = useMediaStream();
+    const toggleVideo = () => {
+    console.log("useToggleVideo called");
+    if (peerConnectionRef.current) {
+        const senders = peerConnectionRef.current.getSenders();
+        const videoSenders = senders.filter(sender =>
+            sender.track && sender.track.kind === 'video'
+        );
+        videoSenders.forEach(sender => {
+            if (sender.track) {
+                sender.track.enabled = !isVideoOff;
+            }
+        });
+    }
+    setIsVideoOff(!isVideoOff);
+};
+return toggleVideo;
+}
 
 
-
-const VideoFunctions = ({stream}) => {
+const VideoFunctions = ({ stream }) => {
     const [isMuted, setIsMuted] = useState(false);
     const [isCaptioned, setIsCaptioned] = useState(false);
-    const[transcript, setTranscript] = useState("");
-    const {peerConnectionRef} = useMediaStream();
-    
+    const [transcript, setTranscript] = useState("");
+    const { peerConnectionRef } = useMediaStream();
+
     const toggleMute = () => {
         if (peerConnectionRef.current) {
             const senders = peerConnectionRef.current.getSenders();
-            const audioSenders = senders.filter(sender => 
+            const audioSenders = senders.filter(sender =>
                 sender.track && sender.track.kind === 'audio'
             );
             audioSenders.forEach(sender => {
@@ -83,7 +101,7 @@ const VideoFunctions = ({stream}) => {
         }
     }, [isCaptioned, stream]);
 
-    
+
 
 
 
@@ -106,8 +124,8 @@ const VideoFunctions = ({stream}) => {
                     </IconButton>
                 )
             }
-            
-           {
+
+            {
                 !isMuted && (
                     <IconButton onClick={toggleMute}>
                         <VolumeUp />

@@ -4,14 +4,9 @@ import { useMediaStream } from './MediaStreamContext';
 import CallEndRoundedIcon from '@mui/icons-material/CallEndRounded';
 import MicRoundedIcon from '@mui/icons-material/MicRounded';
 import VideocamRoundedIcon from '@mui/icons-material/VideocamRounded';
-import ClosedCaptionDisabledOutlinedIcon from '@mui/icons-material/ClosedCaptionDisabledOutlined';
-import ClosedCaptionOffOutlinedIcon from '@mui/icons-material/ClosedCaptionOffOutlined';
-import VolumeOffIcon from '@mui/icons-material/VolumeOff';
-import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-
 import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 import MicOffIcon from '@mui/icons-material/MicOff';
-import VideoFunctions from './videoFunctions';
+import VideoFunctions, { useToggleVideo } from './videoFunctions';
 import { useEndCall } from './WebRtc';
 
 const VideoCall = () => {
@@ -21,10 +16,8 @@ const VideoCall = () => {
     const endCall = useEndCall();
 
     const [micOn, setMicOn] = useState(true);
-    const [videoOn, setVideoOn] = useState(true);
-
-    const [isMuted, setIsMuted] = useState(false);
-    const [isCaptioned, setIsCaptioned] = useState(false);
+    const {isVideoOff, setIsVideoOff} = useMediaStream();
+    const toggleVideo = useToggleVideo();
 
     useEffect(() => {
         if (localVideoRef.current && localStream) {
@@ -117,9 +110,9 @@ const VideoCall = () => {
                 }
 
                 {
-                    videoOn && (
+                    isVideoOff && (
                         <Box sx={{ backgroundColor: 'grey', borderRadius: '50%' }}>
-                            <IconButton aria-label="mic" onClick={() => setVideoOn(!videoOn)}>
+                            <IconButton aria-label="mic" onClick={toggleVideo}>
                                 <VideocamRoundedIcon sx={{ fontSize: 42, color: 'white' }} />
                             </IconButton>
                         </Box>
@@ -127,9 +120,9 @@ const VideoCall = () => {
                 }
 
                 {
-                    !videoOn && (
+                    !isVideoOff && (
                         <Box sx={{ backgroundColor: 'grey', borderRadius: '50%' }}>
-                            <IconButton aria-label="mic" onClick={() => setVideoOn(!videoOn)}>
+                            <IconButton aria-label="mic" onClick={toggleVideo}>
                                 <VideocamOffIcon sx={{ fontSize: 42, color: 'white' }} />
                             </IconButton>
                         </Box>
