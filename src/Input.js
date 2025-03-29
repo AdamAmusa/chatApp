@@ -19,6 +19,7 @@ const Input = () => {
     const { currentUser } = useContext(AuthContext);
     const [isEmojiOpened, setIsEmojiOpened] = useState(false);
     const emojiPickerRef = useRef(null);
+    const inputRef = useRef(null);
     const [file, setFile] = useState(null);
 
     useEffect(() => {
@@ -27,11 +28,19 @@ const Input = () => {
                 setIsEmojiOpened(false);
             }
         };
-        document.addEventListener('mousedown', handleClickOutside);
+        if (isEmojiOpened) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, []);
+    }, [isEmojiOpened]);
+
+    const handleEmojiClick = (emojiData) => {
+        setFormValue(prev => prev + emojiData.emoji);
+        setIsEmojiOpened(false);
+        inputRef.current.focus(); // Return focus to the input after emoji selection
+    };
 
     const uploadFile = (selectedFile) => {
         const formData = new FormData();
@@ -106,46 +115,47 @@ const Input = () => {
 
 
     return (
-        <Box
-            component="div"
-            width={"60%"}
-
-
-        >
+        <Box component="div" width={"100%"} position="relative" ref={emojiPickerRef}>
             <form onSubmit={sendMessage} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                 <TextField
                     size="small"
                     value={formValue}
                     onChange={(e) => setFormValue(e.target.value)}
                     placeholder="Type a message..."
-
+                    inputRef={inputRef}
                     sx={{
                         flex: 1,
                         '& .MuiOutlinedInput-root': {
                             backgroundColor: 'white',
                         },
-
                     }}
                 />
-               <div ref={emojiPickerRef}>
-                    <EmojiPicker open={isEmojiOpened} />
+                
+                <div ref={emojiPickerRef} style={{ position: 'relative' }}>
+                    <IconButton onClick={() => setIsEmojiOpened(!isEmojiOpened)}>
+                        <SentimentSatisfiedAltOutlined sx={{ fontSize: "4vh" }} />
+                    </IconButton>
+                    {isEmojiOpened && (
+                        <div  style={{ position: 'absolute', bottom: '50px', right: '0', zIndex: 1000 }}>
+                            <EmojiPicker 
+                                onEmojiClick={handleEmojiClick}
+                                width={300}
+                                height={400}
+                            />
+                        </div>
+                    )}
                 </div>
-                <div ref ={emojiPickerRef}>
-                <IconButton onClick={() => setIsEmojiOpened(!isEmojiOpened)}>
-                    <SentimentSatisfiedAltOutlined sx={{ fontSize: "4vh" }} />
-                </IconButton>
-                </div>
+                
                 <IconButton
                     component="label"
                     role={undefined}
                     variant="contained"
                     tabIndex={-1}
-                    
                 >
                     <InsertPhoto sx={{ fontSize: "4vh" }} />
                     <VisuallyHiddenInput
                         type="file"
-                        onChange={(event) => handleFileChange(event)}
+                        onChange={handleFileChange}
                         multiple
                         accept="image/*"
                     />
@@ -156,13 +166,10 @@ const Input = () => {
                     variant="contained"
                     size="small"
                     endIcon={<SendIcon />}
-                    sx={{
-                        height: '40px', // Matches the small TextField height
-                    }}
+                    sx={{ height: '40px' }}
                 >
                     Send
                 </Button>
-                
             </form>
         </Box>
     )

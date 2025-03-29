@@ -1,4 +1,3 @@
-
 import { AppBar, Box, Button, Drawer, IconButton, Toolbar, styled } from '@mui/material';
 import ChatList from './chatList';
 import Messages from './Messages';
@@ -7,49 +6,75 @@ import React, { useEffect, useState } from 'react';
 import TopBar from './topbar';
 import Profile from './Profile';
 
-const sidebarWidth = 300;
+const sidebarWidth = '25%'; // Using percentage for consistent relative width
 
-const ChatPage = () => {    
+const ChatPage = () => {
     return (
-
-        <Box sx={{ display: "flex", width: "100vw" }}>
-
-
-
-            <Drawer
-                variant="permanent"
-                sx={{
-                    display: { xs: 'none', sm: 'block' },
-                    width: sidebarWidth,
-                    flexShrink: 0,
-                    '& .MuiDrawer-paper': { boxSizing: 'border-box', width: sidebarWidth },
-
-                }}
-                open
-            >
-
-                <div>
+        <Box sx={{ 
+            display: 'flex', 
+            width: '100vw', 
+            height: '100vh',
+            overflow: 'hidden' // Prevent any scrolling on the main container
+        }}>
+            {/* Left sidebar */}
+            <Box sx={{
+                width: sidebarWidth,
+                minWidth: sidebarWidth, // Prevent shrinking below 30%
+                height: '100vh',
+                borderRight: '1px solid #ccc',
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'relative', // For absolute positioning of children if needed
+                overflow: 'hidden' // Prevent scrolling on the sidebar container
+            }}>
+                <Box sx={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflowY: 'auto' // Allow scrolling only for the content
+                }}>
                     <ChatList />
                     <Profile sidebarWidth={sidebarWidth} />
-                </div>
+                </Box>
+            </Box>
 
-            </Drawer>
-
-
-            {/* Message list and input section */}
-            <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${sidebarWidth * 2}px)` }, pt: 10, pb: 10 }}>
+            {/* Right main content area */}
+            <Box sx={{ 
+                flexGrow: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100vh',
+                overflow: 'hidden'
+            }}>
                 <TopBar />
-                <Messages />
-                <AppBar position='fixed' color="inherit" sx={{ top: 'auto', bottom: 0, height: '80px' }}>
-                    <Toolbar sx={{ display: 'flex', justifyContent: 'end', alignItems: 'center', height: '100%' }}>
+                <Box sx={{ 
+                    flexGrow: 1,
+                    overflowY: 'auto' // Allow messages to scroll
+                }}>
+                    <Messages />
+                </Box>
+                <AppBar 
+                    position='sticky' 
+                    color="inherit" 
+                    sx={{ 
+                        top: 'auto', 
+                        bottom: 0, 
+                        height: '80px', 
+                        width: '100%' 
+                    }}
+                >
+                    <Toolbar sx={{ 
+                        display: 'flex', 
+                        justifyContent: 'end', 
+                        alignItems: 'center', 
+                        height: '100%' 
+                    }}>
                         <Input />
                     </Toolbar>
                 </AppBar>
             </Box>
-
-
         </Box>
-
     );
 };
 
