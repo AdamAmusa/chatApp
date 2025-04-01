@@ -5,7 +5,7 @@ import { useMediaStream } from "./MediaStreamContext";
 
 
 export const useToggleVideo = () => {
-    const { peerConnectionRef, isVideoOff, setIsVideoOff} = useMediaStream();
+    const { peerConnectionRef, isVideoOn, setIsVideoOn} = useMediaStream();
     const toggleVideo = () => {
     console.log("useToggleVideo called");
     if (peerConnectionRef.current) {
@@ -15,11 +15,11 @@ export const useToggleVideo = () => {
         );
         videoSenders.forEach(sender => {
             if (sender.track) {
-                sender.track.enabled = !isVideoOff;
+                sender.track.enabled = !isVideoOn;
             }
         });
     }
-    setIsVideoOff(!isVideoOff);
+    setIsVideoOn(!isVideoOn);
 };
 return toggleVideo;
 }

@@ -16,7 +16,7 @@ const VideoCall = () => {
     const endCall = useEndCall();
 
     const [micOn, setMicOn] = useState(true);
-    const {isVideoOff, setIsVideoOff} = useMediaStream();
+    const {isVideoOn, setIsVideoOn} = useMediaStream();
     const toggleVideo = useToggleVideo();
 
     useEffect(() => {
@@ -108,9 +108,10 @@ const VideoCall = () => {
                         </Box>
                     )
                 }
+                {console.log("Video is ", isVideoOn)}
 
                 {
-                    isVideoOff && (
+                    isVideoOn && (
                         <Box sx={{ backgroundColor: 'grey', borderRadius: '50%' }}>
                             <IconButton aria-label="mic" onClick={toggleVideo}>
                                 <VideocamRoundedIcon sx={{ fontSize: 42, color: 'white' }} />
@@ -119,8 +120,10 @@ const VideoCall = () => {
                     )
                 }
 
+
+
                 {
-                    !isVideoOff && (
+                    !isVideoOn && (
                         <Box sx={{ backgroundColor: 'grey', borderRadius: '50%' }}>
                             <IconButton aria-label="mic" onClick={toggleVideo}>
                                 <VideocamOffIcon sx={{ fontSize: 42, color: 'white' }} />
@@ -128,6 +131,9 @@ const VideoCall = () => {
                         </Box>
                     )
                 }
+
+                
+                
 
                 <Box sx={{ backgroundColor: 'red', borderRadius: '50%' }}>
                     <IconButton aria-label="end call" onClick={endCall}>

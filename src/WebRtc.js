@@ -65,7 +65,7 @@ export const useDeclineCall = () => {
 export const useEndCall = () => {
     const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
-    const { peerConnectionRef } = useMediaStream();
+    const { peerConnectionRef, setIsVideoOn } = useMediaStream();
     const { data } = useContext(ChatContext);
     console.log("useEndCall");
     const endCall = async () => {
@@ -84,6 +84,7 @@ export const useEndCall = () => {
                 peerConnectionRef.current = null;
             }
             navigate("/chatpage");
+            setIsVideoOn(true);
         } catch (error) {
             console.error("Error ending call:", error);
         }

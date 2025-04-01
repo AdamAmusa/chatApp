@@ -1,5 +1,4 @@
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Avatar, Box, Divider, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Avatar, Box, Divider, List, ListItem, ListItemButton, Typography } from '@mui/material';
 import { useContext, useState, useEffect, useRef } from 'react';
 import { onSnapshot, doc } from 'firebase/firestore';
 import { AuthContext } from './context';
@@ -44,7 +43,9 @@ const ChatList = () => {
                      <ListItemButton onClick={() => handleSelect(chat[1].userInfo)} sx={{height:"3vw"}}>
                     <Box sx={{ display: "flex", alignItems: "center", width:"100%"}}>
                         <Avatar sx={{width:30, height:30, color:"inherit"}} />
-                        <p style={{color:'inherit',  marginLeft: "18px", fontSize:"20px"}}>{chat[1].userInfo.displayName}</p>
+                        <Typography variant="body1" sx={{ ml: 2, fontSize: "20px", color: "black"}}>
+                                {chat[1].userInfo.displayName}
+                            </Typography>
                     </Box>
                     </ListItemButton>             
                 </ListItem>

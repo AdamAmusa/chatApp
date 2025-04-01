@@ -11,7 +11,7 @@ export const MediaStreamProvider = ({ children }) => {
     const [localStream, setLocalStream] = useState(null);
     const [remoteStream, setRemoteStream] = useState(null);
     const [peerConnectionRef, setPeerConnectionRef] = useState(null);
-    const [isVideoOff, setIsVideoOff] = useState(false);
+    const [isVideoOn, setIsVideoOn] = useState(true);
     return (
         <MediaStreamContext.Provider value={{ 
             localStream, 
@@ -20,8 +20,8 @@ export const MediaStreamProvider = ({ children }) => {
             setRemoteStream,
             peerConnectionRef,
             setPeerConnectionRef,
-            isVideoOff,
-            setIsVideoOff 
+            isVideoOn,
+            setIsVideoOn 
         }}>
             {children}
         </MediaStreamContext.Provider>
