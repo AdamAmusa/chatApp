@@ -1,24 +1,22 @@
 import Message from "./Message";
-import { useContext, useEffect, useState,useRef } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { ChatContext } from "./ChatContext";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
 const Messages = () => {
     const { data } = useContext(ChatContext);
-    const [messages, setMessages] = useState([]);
-    const [images, setImages] = useState([]);
     const [combinedMessages, setCombinedMessages] = useState([]);
+    const containerRef = useRef();
 
-
-    const autoscroll = useRef();
-
+    // Scroll to the bottom when new messages are added
     useEffect(() => {
-        if (autoscroll.current) {
-            autoscroll.current.scrollIntoView({ behavior: 'smooth' });
+        if (containerRef.current) {
+            containerRef.current.scrollTop = containerRef.current.scrollHeight;
         }
     }, [combinedMessages]);
 
+    // Fetch messages and sort them in reverse order
     useEffect(() => {
         if (data && data.chatId) {
             console.log("Pressed " + data.chatId);
@@ -27,13 +25,11 @@ const Messages = () => {
                 if (snapshot.exists()) {
                     const messagesData = snapshot.data().messages || [];
                     const imagesData = snapshot.data().images || [];
-                    setMessages(messagesData);
-                    setImages(imagesData);
 
                     // Combine and sort messages and images by date
-                    const combinedData = [...messagesData, ...imagesData].sort((a, b) => {
-                        return a.date.seconds - b.date.seconds;
-                    });
+                    const combinedData = [...messagesData, ...imagesData]
+                        .sort((a, b) => b.date.seconds - a.date.seconds); 
+
                     setCombinedMessages(combinedData);
                 }
             });
@@ -49,18 +45,21 @@ const Messages = () => {
     }
 
     return (
-        <div className = "chat-container">
-
-    {combinedMessages.map((msg, index) => (
+        <div
+            ref={containerRef}
+            style={{
+                height: '100%',
+                overflowY: 'scroll',
+                display: 'flex',
+                flexDirection: 'column-reverse', // Normal stacking order
+                justifyContent: 'flex-start', // Align messages at the top
+            }}
+        >
+            {combinedMessages.map((msg, index) => (
                 <Message key={index} message={msg} type={msg.image_url ? "image" : "text"} />
             ))}
-
-            <div ref={autoscroll}></div>
         </div>
-
-    )
-}
-
-
+    );
+};
 
 export default Messages;

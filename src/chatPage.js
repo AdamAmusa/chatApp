@@ -1,12 +1,16 @@
-import { AppBar, Box, Button, Drawer, IconButton, Toolbar, styled } from '@mui/material';
+import { AppBar, Box, Toolbar } from '@mui/material';
 import ChatList from './chatList';
 import Messages from './Messages';
 import Input from './Input';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import TopBar from './topbar';
 import Profile from './Profile';
 
 const sidebarWidth = '25%'; // Using percentage for consistent relative width
+
+
+
+
 
 const ChatPage = () => {
     return (
@@ -49,8 +53,10 @@ const ChatPage = () => {
             }}>
                 <TopBar />
                 <Box sx={{ 
-                    flexGrow: 1,
-                    overflowY: 'auto' // Allow messages to scroll
+                    flexGrow: 1, // Make Messages take up the remaining space
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden'
                 }}>
                     <Messages />
                 </Box>

@@ -10,9 +10,6 @@ import { InsertPhoto, SentimentSatisfiedAltOutlined } from "@mui/icons-material"
 import EmojiPicker from "emoji-picker-react";
 
 
-
-
-
 const Input = () => {
     const [formValue, setFormValue] = useState('');
     const { data } = useContext(ChatContext);
