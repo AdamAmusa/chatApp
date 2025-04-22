@@ -10,6 +10,7 @@ import { ProtectedRoutes } from './ProtectedRoutes';
 import { Navigate } from 'react-router-dom';
 import PersistantSidebar from './PersistantSidebar';
 import { Box } from '@mui/material';
+import AddFriends from './AddFriends';
 
 const sidebarWidth = 150;
 
@@ -25,7 +26,7 @@ function App() {
 
 function MainLayout({ currentUser }) {
   const location = useLocation(); // Now inside a Router context
-  const showSidebar = location.pathname === '/chatpage' || location.pathname === '/call';
+  const showSidebar = location.pathname === '/chatpage' || location.pathname === '/call' || location.pathname === '/add';
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -46,6 +47,7 @@ function MainLayout({ currentUser }) {
           <Route path="/" element={currentUser ? <Navigate to="/chatpage" /> : <Navigate to="/login" />} />
           <Route path="/chatpage" element={<ProtectedRoutes><ChatPage /></ProtectedRoutes>} />
           <Route path="/call" element={<ProtectedRoutes><VideoCall /></ProtectedRoutes>} />
+          <Route path ="/add" element={<ProtectedRoutes><AddFriends/></ProtectedRoutes>} />
         </Routes>
       </Box>
     </Box>

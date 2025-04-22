@@ -3,7 +3,7 @@ import { useContext, useEffect, useState, useRef } from "react";
 import { ChatContext } from "./ChatContext";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebaseConfig";
-import { getLastConversation } from "./Authentication";
+import { getLastConversation, setLastConversation } from "./Authentication";
 import { AuthContext } from "./context";
 
 
@@ -24,7 +24,7 @@ const Messages = () => {
     useEffect(() => {
         if (data && data.chatId) {
             console.log("Pressed " + data.chatId);
-
+            setLastConversation(data.chatId);
             const unsub = onSnapshot(doc(db, "messages", data.chatId), (snapshot) => {
                 if (snapshot.exists()) {
                     const messagesData = snapshot.data().messages || [];
@@ -47,11 +47,14 @@ const Messages = () => {
     useEffect(() => {
         const fetchLast = async () => {
             if (!data.chatId && currentUser?.uid) {
-                const lastId = await getLastConversation(currentUser.uid);
+                const lastId = await getLastConversation();
                 console.log("Fetched lastId:", lastId);
     
                 if (lastId && lastId !== data.chatId) {
                     dispatch({ type: 'SET_CHAT_ID', payload: lastId });
+                }
+                else {
+                    console.log("No lastId found or it matches the current chatId.");
                 }
             }
         };

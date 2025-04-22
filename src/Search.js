@@ -10,7 +10,27 @@ import {InputAdornment} from '@mui/material';
 
 
 
-
+export const handleSearch = async (user, email) => {
+    console.log("Searching for user with email:", email, user);
+    const usersRef = query(
+        collection(db, "users"),
+        where("email", "==", email.toLowerCase()),
+        where("uid", "!=", user)
+    );
+    try {
+        const querySnapshot = await getDocs(usersRef);
+        if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0]; // get the first result
+            console.log("User found:", userDoc.data());
+            return userDoc.data(); // return user data
+        } else {
+            return null; // no user found
+        }
+    } catch (e) {
+        console.error("Search error:", e);
+        return null;
+    }
+};
 
 const Search = () => {
     const [email, setEmail] = useState('');
@@ -69,21 +89,7 @@ const Search = () => {
 
     };
 
-    const handleSearch = async () => {
-
-        const usersRef = query(collection(db, "users"),
-            where("email", "==", email));
-        // Get the user with the email
-        try {
-            const querySnapshot = await getDocs(usersRef);
-            querySnapshot.forEach((doc) => {
-                setUser(doc.data());
-            });
-            console.log("User found" + user.displayName);
-        } catch (e) {
-            setError(true);
-        }
-    };
+   
 
     return (
         <Box sx={{padding: 1}} >
