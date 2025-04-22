@@ -33,7 +33,7 @@ const Profile = ({ sidebarWidth }) => {
             height: '80px',
         }}
     >
-        <Box sx={{ display: 'flex', justifyContent: 'start', alignItems: 'flex-end', height: '100%' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
         <IconButton size="large" aria-label="account of current user" aria-controls="menu-appbar" aria-haspopup="true" onClick={handleMenu} color="inherit">
             <AccountCircle sx={{
                 fontSize: "50px"

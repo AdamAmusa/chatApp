@@ -2,7 +2,6 @@ import { AppBar, Box, Toolbar } from '@mui/material';
 import ChatList from './chatList';
 import Messages from './Messages';
 import Input from './Input';
-import React, { useEffect, useRef } from 'react';
 import TopBar from './topbar';
 import Profile from './Profile';
 
@@ -10,26 +9,23 @@ const sidebarWidth = '25%'; // Using percentage for consistent relative width
 
 
 
-
-
 const ChatPage = () => {
     return (
         <Box sx={{ 
             display: 'flex', 
-            width: '100vw', 
             height: '100vh',
-            overflow: 'hidden' // Prevent any scrolling on the main container
+            overflow: 'hidden'
         }}>
             {/* Left sidebar */}
             <Box sx={{
                 width: sidebarWidth,
-                minWidth: sidebarWidth, // Prevent shrinking below 30%
+                minWidth: sidebarWidth,
                 height: '100vh',
                 borderRight: '1px solid #ccc',
                 display: 'flex',
                 flexDirection: 'column',
-                position: 'relative', // For absolute positioning of children if needed
-                overflow: 'hidden' // Prevent scrolling on the sidebar container
+                position: 'relative', 
+                overflow: 'hidden'
             }}>
                 <Box sx={{
                     width: '100%',
@@ -39,7 +35,6 @@ const ChatPage = () => {
                     overflowY: 'auto' // Allow scrolling only for the content
                 }}>
                     <ChatList />
-                    <Profile sidebarWidth={sidebarWidth} />
                 </Box>
             </Box>
 
@@ -53,7 +48,7 @@ const ChatPage = () => {
             }}>
                 <TopBar />
                 <Box sx={{ 
-                    flexGrow: 1, // Make Messages take up the remaining space
+                    flexGrow: 1,
                     display: 'flex',
                     flexDirection: 'column',
                     overflow: 'hidden'

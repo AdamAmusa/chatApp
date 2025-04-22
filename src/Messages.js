@@ -3,9 +3,13 @@ import { useContext, useEffect, useState, useRef } from "react";
 import { ChatContext } from "./ChatContext";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebaseConfig";
+import { getLastConversation } from "./Authentication";
+import { AuthContext } from "./context";
+
 
 const Messages = () => {
-    const { data } = useContext(ChatContext);
+    const { data, dispatch } = useContext(ChatContext);
+    const {currentUser} = useContext(AuthContext);
     const [combinedMessages, setCombinedMessages] = useState([]);
     const containerRef = useRef();
 
@@ -40,9 +44,21 @@ const Messages = () => {
         }
     }, [data.chatId]);
 
-    if (!data || !data.chatId) {
-        return <p>Please select a chat to view messages.</p>;
-    }
+    useEffect(() => {
+        const fetchLast = async () => {
+            if (!data.chatId && currentUser?.uid) {
+                const lastId = await getLastConversation(currentUser.uid);
+                console.log("Fetched lastId:", lastId);
+    
+                if (lastId && lastId !== data.chatId) {
+                    dispatch({ type: 'SET_CHAT_ID', payload: lastId });
+                }
+            }
+        };
+    
+        fetchLast();
+    }, [currentUser, data.chatId, dispatch]);
+    
 
     return (
         <div

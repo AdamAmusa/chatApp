@@ -2,7 +2,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { setDoc, doc } from 'firebase/firestore';
+import { setDoc, doc, getDoc } from 'firebase/firestore';
 import { auth, db } from './firebaseConfig';
 
 export const signUpUser = async (email, password, displayName) => {
@@ -106,4 +106,36 @@ export const signUpUser = async (email, password, displayName) => {
         };
         return signOutUser;
     }
+
+    export const getLastConversation = async (userId) =>{
+        console.log("Fetching last conversation for user:", userId);
+        const lastConversation = localStorage.getItem('lastConversation');
+        if (lastConversation) {
+            return JSON.parse(lastConversation);
+        }
+        else{
+
+        // Step 2: If not found, check Firestore
+    try {
+        const userChatsRef = doc(db, "userChats", userId);
+        const userChatsSnap = await getDoc(userChatsRef);
+
+        if (userChatsSnap.exists()) {
+            const chatsData = userChatsSnap.data();
+            const firstChatId = Object.keys(chatsData)?.[0] || null;
+
+            if (firstChatId) {
+                localStorage.setItem("lastConversation", JSON.stringify(firstChatId));
+            }
+
+            return firstChatId;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Error fetching userChats:", error);
+        return null;
+    }
+    }
+}
 

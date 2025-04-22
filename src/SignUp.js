@@ -211,7 +211,15 @@ function SignUp() {
 
 
     return (
-        <div className="Login">
+        <div
+        style={{
+            display: 'flex',
+            justifyContent: 'center', // Center horizontally
+            alignItems: 'center', // Center vertically
+            height: '100vh', // Full viewport height
+            backgroundColor: '#f5f5f5', // Optional: Add a background color
+        }}
+    >
             <Card variant="" >
 
                 <Box

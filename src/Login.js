@@ -179,7 +179,16 @@ function Login() {
      }
     
     return (
-        <div className="Login">
+        <div
+            className="Login"
+            style={{
+                display: 'flex',
+                justifyContent: 'center', // Center horizontally
+                alignItems: 'center', // Center vertically
+                height: '100vh', // Full viewport height
+                backgroundColor: '#f5f5f5', // Optional: Add a background color
+            }}
+        >
             <Card variant="" >
 
                 <Box
@@ -191,7 +200,8 @@ function Login() {
                         flexDirection: 'column',
                         width: '100%',
                         gap: 2,
-                    }}
+                        
+                        }}
                 >
                     <FormControl variant="standard">
                         <InputLabel shrink htmlFor="bootstrap-input">
