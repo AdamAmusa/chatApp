@@ -8,6 +8,7 @@ import { v4 as uuid } from "uuid";
 import { AuthContext } from "./context";
 import { InsertPhoto, SentimentSatisfiedAltOutlined } from "@mui/icons-material";
 import EmojiPicker from "emoji-picker-react";
+import { useMediaStream } from "./MediaStreamContext";
 
 
 const Input = () => {
@@ -17,6 +18,7 @@ const Input = () => {
     const [isEmojiOpened, setIsEmojiOpened] = useState(false);
     const emojiPickerRef = useRef(null);
     const inputRef = useRef(null);
+    const {isImageUploading, setIsImageUploading} = useMediaStream();
     const [file, setFile] = useState(null);
 
     useEffect(() => {
@@ -40,6 +42,8 @@ const Input = () => {
     };
 
     const uploadFile = (selectedFile) => {
+        setIsImageUploading(true);
+        console.log("Uploading file loading...");
         const formData = new FormData();
         formData.append('file', selectedFile);
         formData.append('senderId', currentUser.uid);
@@ -49,9 +53,14 @@ const Input = () => {
             method: 'POST',
             body: formData
         }).then((response) => {
+            setIsImageUploading(!isImageUploading);
             return response.json();
         }).then((data) => {
             console.log(data);
+        })
+        .finally(() => {
+            console.log("File upload complete");
+            setIsImageUploading(false);
         });
     };
 
@@ -120,6 +129,7 @@ const Input = () => {
                     onChange={(e) => setFormValue(e.target.value)}
                     placeholder="Type a message..."
                     inputRef={inputRef}
+                    disabled={isImageUploading}
                     sx={{
                         flex: 1,
                         '& .MuiOutlinedInput-root': {
@@ -136,6 +146,7 @@ const Input = () => {
                         <div  style={{ position: 'absolute', bottom: '50px', right: '0', zIndex: 1000 }}>
                             <EmojiPicker 
                                 onEmojiClick={handleEmojiClick}
+                                disabled={isImageUploading}
                                 width={300}
                                 height={400}
                             />
@@ -148,6 +159,7 @@ const Input = () => {
                     role={undefined}
                     variant="contained"
                     tabIndex={-1}
+                    disabled={isImageUploading}
                 >
                     <InsertPhoto sx={{ fontSize: "4vh" }} />
                     <VisuallyHiddenInput
@@ -164,6 +176,7 @@ const Input = () => {
                     size="small"
                     endIcon={<SendIcon />}
                     sx={{ height: '40px' }}
+                    disabled={isImageUploading}
                 >
                     Send
                 </Button>

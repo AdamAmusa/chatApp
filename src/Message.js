@@ -1,7 +1,10 @@
 import { useContext } from "react";
 import { ChatContext } from "./ChatContext";
 import { AuthContext } from "./context";
-import { Paper, Box, Typography, Avatar } from "@mui/material";
+import { Paper, Box, Typography, Avatar, CircularProgress } from "@mui/material";
+
+
+
 
 const Message = ({ message, type }) => {
     const { currentUser } = useContext(AuthContext);
@@ -120,6 +123,8 @@ const Message = ({ message, type }) => {
                 >
                     {formatDateTime(message.date)}
                 </Typography>
+
+                
             </Box>
 
             {isSender && (
@@ -134,6 +139,8 @@ const Message = ({ message, type }) => {
                     }}
                 />
             )}
+
+            
         </Box>
     );
 };

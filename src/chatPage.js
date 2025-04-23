@@ -51,7 +51,9 @@ const ChatPage = () => {
                     flexGrow: 1,
                     display: 'flex',
                     flexDirection: 'column',
-                    overflow: 'hidden'
+                    overflow: 'auto',
+                    pt: 8,
+                    overflowX: 'hidden'
                 }}>
                     <Messages />
                 </Box>

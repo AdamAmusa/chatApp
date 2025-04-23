@@ -5,14 +5,21 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import { getLastConversation, setLastConversation } from "./Authentication";
 import { AuthContext } from "./context";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
+import { useMediaStream } from "./MediaStreamContext";
+
+
 
 const Messages = () => {
     const { data, dispatch } = useContext(ChatContext);
     const {currentUser} = useContext(AuthContext);
     const [combinedMessages, setCombinedMessages] = useState([]);
     const containerRef = useRef();
+    const loadRef = useRef();
+
     const [loading, setLoading] = useState(false);
+    const {isImageUploading, setIsImageUploading} = useMediaStream();
+
     // Scroll to the bottom when new messages are added
     useEffect(() => {
         if (containerRef.current) {
@@ -70,13 +77,30 @@ const Messages = () => {
             ref={containerRef}
             style={{
                 height: '100%',
-                overflowY: 'scroll',
+                overflowY: 'auto',
                 display: 'flex',
-                flexDirection: 'column-reverse', // Normal stacking order
-                justifyContent: 'flex-start', // Align messages at the top
+                flexDirection: 'column-reverse', 
+                justifyContent: 'flex-start',
+                overflowX: 'hidden',
+            }}
+            onLoad={() => {
+                if (loadRef.current) {
+                    loadRef.current.scrollTop = loadRef.current.scrollHeight;
+                }
             }}
         >
-            
+            {isImageUploading && (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        width: '100%',
+                    }}
+                >
+                    <CircularProgress ref={loadRef} />
+                </Box>
+            )}
+
             {!loading && combinedMessages.map((msg, index) => (
                 <Message key={index} message={msg} type={msg.image_url ? "image" : "text"} />
             ))}
@@ -86,8 +110,6 @@ const Messages = () => {
                     <CircularProgress />
                 </div>
             )}
-
-
         </div>
     );
 };
