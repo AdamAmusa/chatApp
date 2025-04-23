@@ -5,14 +5,14 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import { getLastConversation, setLastConversation } from "./Authentication";
 import { AuthContext } from "./context";
-
+import { CircularProgress } from "@mui/material";
 
 const Messages = () => {
     const { data, dispatch } = useContext(ChatContext);
     const {currentUser} = useContext(AuthContext);
     const [combinedMessages, setCombinedMessages] = useState([]);
     const containerRef = useRef();
-
+    const [loading, setLoading] = useState(false);
     // Scroll to the bottom when new messages are added
     useEffect(() => {
         if (containerRef.current) {
@@ -25,8 +25,10 @@ const Messages = () => {
         if (data && data.chatId) {
             console.log("Pressed " + data.chatId);
             setLastConversation(data.chatId);
+            setLoading(true);
             const unsub = onSnapshot(doc(db, "messages", data.chatId), (snapshot) => {
                 if (snapshot.exists()) {
+                    setLoading(false);
                     const messagesData = snapshot.data().messages || [];
                     const imagesData = snapshot.data().images || [];
 
@@ -74,9 +76,18 @@ const Messages = () => {
                 justifyContent: 'flex-start', // Align messages at the top
             }}
         >
-            {combinedMessages.map((msg, index) => (
+            
+            {!loading && combinedMessages.map((msg, index) => (
                 <Message key={index} message={msg} type={msg.image_url ? "image" : "text"} />
             ))}
+
+            {loading && (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%'}}>
+                    <CircularProgress />
+                </div>
+            )}
+
+
         </div>
     );
 };

@@ -1,9 +1,10 @@
-import { Box, Card, CardContent, CardHeader, Typography, Input, List, ListItem, ListItemText, Button } from "@mui/material";
-import { handleSearch } from "./Search";
-import { useContext, useState } from "react";
+import { Box, Card, CardContent, CardHeader, Typography, Input, List, ListItem, ListItemText, Button, Avatar, IconButton, CircularProgress } from "@mui/material";
+import { acceptUser, handleSearch } from "./Search";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "./context";
-import { setUserInbox, useCheckUserInbox } from "./Authentication";
-
+import { isFriend, setUserInbox, useCheckUserInbox } from "./Authentication";
+import { ChatBubble, Close, PersonAdd } from "@mui/icons-material";
+import { ChatContext } from "./ChatContext";
 
 
 
@@ -15,19 +16,35 @@ const AddFriends = () => {
     const [searchValue, setSearchValue] = useState('');
     const [user, setUser] = useState(null);
     const { requests, loading, error } = useCheckUserInbox(currentUser.uid);
+    const { data, dispatch } = useContext(ChatContext);
+    const [isFriendStatus, setIsFriendStatus] = useState(false);
 
+    useEffect(() => {
+        const checkFriendStatus = async () => {
+            if (user && currentUser) {
+                const status = await isFriend(currentUser.uid, user.uid);
+                setIsFriendStatus(status);
+            }
+        };
 
-    if (loading) return <p>Loading inbox...</p>;
+        checkFriendStatus();
+    }, [user, currentUser]);
+
+    if (loading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%'}}>
+                            <CircularProgress />
+                        </div>;
     if (error) return <p>Error loading inbox: {error.message}</p>;
 
 
 
-    const submitKey = async(e) => {
-            if(e.code === "Enter")
-            {
-               const result =  await handleSearch(currentUser.uid,searchValue);
+
+
+    const submitKey = async (e) => {
+        if (e.code === "Enter") {
+            const result = await handleSearch(currentUser.uid, searchValue);
             setUser(result);
-            }
+
+        }
     }
     return (
         <Box
@@ -38,50 +55,71 @@ const AddFriends = () => {
                 justifyContent: 'center',
                 height: '100%',
             }}
-        >   
-        
+        >
+
             <Card variant="outlined" sx={{ width: '60%', height: '80%', borderRadius: '8px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
                 <CardHeader
                     title={
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                             <Input
+                            <Input
                                 placeholder="Search for friends"
                                 fullWidth
                                 sx={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px' }}
                                 value={searchValue}
                                 onChange={(e) => setSearchValue(e.target.value)}
                                 onKeyDown={submitKey}
-                            />   
-                        </Box>          
-                      }              
-                />               
+                            />
+                        </Box>
+                    }
+                />
                 <CardContent>
-                    <Typography variant="h6">Add Friends</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        Use the search bar above to find and add friends.
-                    </Typography>
-                    {user && (
-                        <List sx={{ width: '100%', top: 80 }}>
-                         <ListItem >
-                            <ListItemText secondary={user.displayName} />
-                         </ListItem>
-                         <ListItem >
-                            <Button onClick={() => setUserInbox(currentUser.uid, user.uid)}>
-                                Add Friend
-                            </Button>
-                        </ListItem>
-                         </List>
-                        )} 
+
+                    {!user && (
+                        <div>
+                            <Typography variant="h6">Add Friends</Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Use the search bar above to find and add friends.
+                            </Typography>
+                        </div>
+                    )}
+
+                    {user && !isFriendStatus && (
+                        <Box sx={{ width: '100%', top: 80, flexDirection: 'row', display: 'flex', alignItems: 'center', padding: 2 }}>
+                            <Avatar src={user?.photoURL} alt={user?.displayName} sx={{ width: 50, height: 50, marginRight: 2 }} />
+                            {user?.displayName}
+                            <IconButton color="info" onClick={() => setUserInbox({ displayName: currentUser?.displayName, email: currentUser?.email, id: currentUser?.uid }, user?.uid, "pending")}>
+                                <PersonAdd />
+                            </IconButton>
+                        </Box>
+                    )}
+
+                    {user && isFriendStatus && (
+                        <Box sx={{ width: '100%', top: 80, flexDirection: 'row', display: 'flex', alignItems: 'center', padding: 2 }}>
+                            <Avatar src={user?.photoURL} alt={user?.displayName} sx={{ width: 50, height: 50, marginRight: 2 }} />
+                            {user?.displayName}
+                            <IconButton color="primary" href="/chatpage" onClick={() => dispatch({ type: 'SET_CHAT_ID', payload: currentUser.uid > user.uid ? currentUser.uid + user.uid : user.uid + currentUser.uid })}>
+                                <ChatBubble />
+                            </IconButton>
+                        </Box>
+                    )}
+
                 </CardContent>
-                <ul>
-                    {Object.entries(requests).map(([senderId, status]) => (
-                      <li key={senderId}>
-                        Request from {senderId}: <strong>{status}</strong>
-                      </li>
-                    ))}
-                </ul>          
-            </Card>           
-        </Box>                   
+
+
+                {Object.entries(requests).map(([userId, requestData]) => (
+                    <Box sx={{ width: '100%', top: 80, flexDirection: 'row', display: 'flex', alignItems: 'center', padding: 2 }}>
+                        <Avatar src={requestData?.photoURL} alt={requestData.displayName} sx={{ width: 50, height: 50, marginRight: 2 }} />
+                        {requestData.displayName}
+                        <IconButton color="success" onClick={() => acceptUser(currentUser, requestData)}>
+                            <PersonAdd />
+                        </IconButton>
+                        <IconButton color="error">
+                            <Close />
+                        </IconButton>
+                    </Box>
+                ))}
+            </Card>
+        </Box>
     );
 };
 

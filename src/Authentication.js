@@ -113,10 +113,17 @@ export const useSignOut = () => {
 
 export const setLastConversation = async (chatId) => {
     try {
+        console.log("Setting last conversation for user:", auth.currentUser.uid, "to chatId:", chatId);
         const userRef = doc(db, 'users', auth.currentUser.uid);
-        await updateDoc(userRef, {
+
+        if(chatId.includes(auth.currentUser.uid)){
+            await updateDoc(userRef, {
             lastConversation: chatId
         });
+        }
+        else{
+            console.error("Invalid chatId format. It should include the user's UID.");
+        }
     } catch (error) {
         console.error("Error setting last conversation:", error);
     }
@@ -154,28 +161,66 @@ export const getLastConversation = async () => {
     }
 }
 
+export const isFriend = async (userId, searchId) => {
+    if(!userId || !searchId){
+        console.error("userId or searchId is null or undefined:", userId, searchId);
+        return false;
+    }
+    try{
+        const userChatRef = doc(db, "userChats", userId);
+        const userChatSnap = await getDoc(userChatRef);
+        const userChatData = userChatSnap.data();        
+        
+        for(const [chatId, chatData] of Object.entries(userChatData)){
+            if(chatData.userInfo?.uid === searchId){
+                console.log("User is a friend:", chatId, chatData);
+                return true;
+            }
+        }
+        return false;
 
-export const setUserInbox = async (senderId, receiverId) => {
+    }catch (error){
+        console.error("Error checking if user is a friend:", error);
+        return false;
+    }
+}
+
+
+export const setUserInbox = async (sender, receiverId, status) => {
     try {
         const inboxRef = doc(db, "inbox", receiverId);
         const inboxSnap = await getDoc(inboxRef);
+        const senderKey = sender.id;
+        const senderData = {
+            id: sender.id,
+            displayName: sender.displayName,
+            email: sender.email,
+            status: status 
+        };
 
         if (inboxSnap.exists()) {
             const inboxData = inboxSnap.data();
-
-            if (inboxData.requests && inboxData.requests[senderId]) {
-                console.log(`Friend request already exists with status: ${inboxData.requests[senderId]}`);
+            
+            if (inboxData.requests?.[senderKey]) {
+                if (inboxData.requests[senderKey].status !== status) {
+                    await updateDoc(inboxRef, {
+                        [`requests.${senderKey}.status`]: status
+                    });
+                    console.log(`Friend request status updated to: ${status}`);
+                } else {
+                    console.log(`Friend request already has status: ${status}`);
+                }
                 return;
             }
 
             await updateDoc(inboxRef, {
-                [`requests.${senderId}`]: "pending"
+                [`requests.${senderKey}`]: senderData
             });
-            console.log("Friend request updated in inbox for user:", receiverId);
+            console.log("New friend request added to inbox for user:", receiverId);
         } else {
             await setDoc(inboxRef, {
                 requests: {
-                    [senderId]: "pending"
+                    [senderKey]: senderData
                 }
             });
             console.log("Inbox created and friend request sent.");
@@ -197,7 +242,11 @@ export const useCheckUserInbox = (userId) => {
 
         const unsubscribe = onSnapshot(inboxRef, (docSnap) => {
             if (docSnap.exists()) {
-                setRequests(docSnap.data().requests || {});
+                const allRequests = docSnap.data().requests || {};
+                const pendingRequests = Object.fromEntries(
+                    Object.entries(allRequests).filter(([_, request]) => request.status === "pending")
+                );
+                setRequests(pendingRequests);
             } else {
                 setRequests({});
             }

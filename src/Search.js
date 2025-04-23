@@ -1,30 +1,25 @@
-import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
-import { collection, query, where, getDoc, getDocs ,doc, setDoc, serverTimestamp, updateDoc} from 'firebase/firestore';
-import { Box, Divider, ListItem, ListItemText } from '@mui/material';
+import { collection, query, where, getDoc, getDocs, doc, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { useContext, useState } from 'react';
 import { db } from './firebaseConfig';
-import List from '@mui/material/List';
 import { AuthContext } from './context';
-import {InputAdornment} from '@mui/material';
-
+import { setUserInbox } from './Authentication';
 
 
 export const handleSearch = async (user, email) => {
-    console.log("Searching for user with email:", email, user);
+    console.log("Searching for user with email:", email);
     const usersRef = query(
         collection(db, "users"),
-        where("email", "==", email.toLowerCase()),
+        where("email", "==", email),
         where("uid", "!=", user)
     );
     try {
         const querySnapshot = await getDocs(usersRef);
         if (!querySnapshot.empty) {
-            const userDoc = querySnapshot.docs[0]; // get the first result
+            const userDoc = querySnapshot.docs[0]; 
             console.log("User found:", userDoc.data());
-            return userDoc.data(); // return user data
+            return userDoc.data(); 
         } else {
-            return null; // no user found
+            return null; 
         }
     } catch (e) {
         console.error("Search error:", e);
@@ -32,85 +27,56 @@ export const handleSearch = async (user, email) => {
     }
 };
 
-const Search = () => {
-    const [email, setEmail] = useState('');
-    const [user, setUser] = useState(null);
-    const [error, setError] = useState(null);
-    const [chatId, setChatId] = useState(null); 
 
-    const {currentUser} = useContext(AuthContext);
+export const acceptUser = async (currentUser, user) => {
+    console.log("Accepting user:", user);
+    setUserInbox({ displayName: user.displayName, email: user.email, id: user.id }, currentUser.uid, "accepted")
 
+    const combinedID = currentUser.uid > user.id
+        ? currentUser.uid + user.id
+        : user.id + currentUser.id;
 
-    const submitKey = (e) => {
-        e.code === "Enter" && handleSearch();
+    console.log("user id:", currentUser.uid);
+    console.log("receiver id:", user.id);
+    try {
+        const res = await getDoc(doc(db, "messages", combinedID));
 
-    }
+        if (!res.exists()) {
+            await setDoc(doc(db, "messages", combinedID), { messages: [] });
 
-    const handleSelect = async () => {
-        
-        //check if the user is already in the chat, if not add them
-        //if they are, then do nothing
-        const combinedID = currentUser.uid > user.uid
-            ? currentUser.uid + user.uid
-            : user.uid + currentUser.uid;
-            setChatId(combinedID);
-        try { 
+            const currentUserChatsDoc = await getDoc(doc(db, "userChats", currentUser.uid));
             
-            const res = await getDoc(doc(db, "messages", combinedID));
-            
-            if (!res.exists()) {
-               
-                //create a new chat
-                await setDoc(doc(db, "messages", combinedID), { messages: [] });
-
-
-                console.log("Updating userChats for currentUser...");
-                await updateDoc(doc(db, "userChats", currentUser.uid), {
-                    [combinedID +".userInfo"]:{
-                        uid: user.uid,
-                        displayName: user.displayName,
-                        photoUrl: null 
-                    },
-                    [combinedID +".date"]: serverTimestamp()
-                });
-
-                await updateDoc(doc(db, "userChats", user.uid), {
-                    [combinedID +".userInfo"]:{
-                        uid: currentUser.uid,
-                        displayName: currentUser.displayName,
-                        photoUrl: null 
-                    },
-                    [combinedID +".date"]: serverTimestamp()
-                });
+            if (!currentUserChatsDoc.exists()) {
+                await setDoc(doc(db, "userChats", currentUser.uid), {});
             }
 
-        } catch (e) { }
+            console.log("Creating new chat for user:", currentUser.uid);
+            await updateDoc(doc(db, "userChats", currentUser.uid), {
+                [combinedID + ".userInfo"]: {
+                    uid: user.id,
+                    displayName: user.displayName,
+                    photoUrl: null
+                },
+                [combinedID + ".date"]: serverTimestamp()
+            });
 
-
-    };
-
-   
+            await updateDoc(doc(db, "userChats", user.id), {
+                [combinedID + ".userInfo"]: {
+                    uid: currentUser.uid,
+                    displayName: currentUser.displayName,
+                    photoUrl: null
+                },
+                [combinedID + ".date"]: serverTimestamp()
+            });
+        }
+    } catch (e) {
+        console.error("Error in handleSelect:", e);
+    }
+};
+const Search = () => {
 
     return (
-        <Box sx={{padding: 1}} >
-            <TextField sx={{ top: -4, width: '80%', color: 'primary'}} label="Enter email" size="small" id="fullWidth"  InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <SearchIcon sx={{ color: 'black' }} />
-          </InputAdornment>
-        ),
-      }}
-    />
-
-    {error && <span>Error occurred</span>}
-    {user && (
-      <List sx={{ width: '100%', top: 80 }} onClick={handleSelect}>
-        <ListItem >
-          <ListItemText secondary={user.displayName} />
-        </ListItem>
-      </List>
-    )}
-  </Box>
+        <div></div>
     )
 }
 
