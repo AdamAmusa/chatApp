@@ -4,16 +4,28 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Search from './Search';
 import HandleCalls from './HandleCalls';
 import { Avatar } from '@mui/material';
+import { useContext, useState, useEffect } from 'react';
+import { ChatContext } from './ChatContext';
+import { getUser } from './Authentication';
 
 const TopBar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [user, setUser] = useState(null);
+  const { data } = useContext(ChatContext);
 
-
-
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (data?.user?.uid) {
+        const userData = await getUser(data.user.uid);
+        setUser(userData);
+      }
+    };
+    
+    fetchUser();
+  }, [data?.user?.uid]); // Re-run when uid changes
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -32,7 +44,10 @@ const TopBar = () => {
             </Tooltip>
 
             <IconButton sx={{ p: 0, ml: 3, mr: 2 }}>
-              <Avatar sx={{ width: 32, height: 32 }} />
+             <Avatar
+                  src={user?.photoURL || 'https://via.placeholder.com/150'}
+                  alt={user?.displayName}></Avatar>
+
             </IconButton>
 
           </Box>

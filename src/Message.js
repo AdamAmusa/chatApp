@@ -71,7 +71,7 @@ const Message = ({ message, type }) => {
         >
             {!isSender && (
                 <Avatar
-                    src={data.user?.photoURL}
+                    src={data.user?.photoURL || 'https://via.placeholder.com/150'}
                     alt={data.user?.displayName}
                     sx={{
                         width: 32,
@@ -129,7 +129,7 @@ const Message = ({ message, type }) => {
 
             {isSender && (
                 <Avatar
-                    src={currentUser?.photoURL}
+                    src={currentUser?.photoURL || 'https://via.placeholder.com/150'}
                     alt={currentUser?.displayName}
                     sx={{
                         width: 32,

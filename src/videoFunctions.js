@@ -1,27 +1,27 @@
-import { Box, IconButton } from "@mui/material"
+import { Box, Card, IconButton, Typography } from "@mui/material"
 import { ClosedCaptionDisabledOutlined, VolumeUp, VolumeOff, ClosedCaptionOutlined } from "@mui/icons-material"
 import { useEffect, useState, useRef } from "react"
 import { useMediaStream } from "./MediaStreamContext";
 
 
 export const useToggleVideo = () => {
-    const { peerConnectionRef, isVideoOn, setIsVideoOn} = useMediaStream();
+    const { peerConnectionRef, isVideoOn, setIsVideoOn } = useMediaStream();
     const toggleVideo = () => {
-    console.log("useToggleVideo called");
-    if (peerConnectionRef.current) {
-        const senders = peerConnectionRef.current.getSenders();
-        const videoSenders = senders.filter(sender =>
-            sender.track && sender.track.kind === 'video'
-        );
-        videoSenders.forEach(sender => {
-            if (sender.track) {
-                sender.track.enabled = !isVideoOn;
-            }
-        });
-    }
-    setIsVideoOn(!isVideoOn);
-};
-return toggleVideo;
+        console.log("useToggleVideo called");
+        if (peerConnectionRef.current) {
+            const senders = peerConnectionRef.current.getSenders();
+            const videoSenders = senders.filter(sender =>
+                sender.track && sender.track.kind === 'video'
+            );
+            videoSenders.forEach(sender => {
+                if (sender.track) {
+                    sender.track.enabled = !isVideoOn;
+                }
+            });
+        }
+        setIsVideoOn(!isVideoOn);
+    };
+    return toggleVideo;
 }
 
 
@@ -139,7 +139,37 @@ const VideoFunctions = ({ stream }) => {
                     </IconButton>
                 )
             }
-            {console.log(transcript)}
+            {
+                transcript && (
+                    <Card
+                        sx={{
+                            backgroundColor: "rgba(0, 0, 0, 0.7)",
+                            padding: 2,
+                            borderRadius: 2,
+                            maxWidth: "80%",
+                            margin: "auto",
+                            mt: 2,
+                            alignSelf: "center",
+                            
+                        }}
+                    >
+                        <Typography
+                            variant="subtitle1"
+                            color="white"
+                            align="center"
+                            sx={{
+                                fontWeight: 500,
+                                letterSpacing: 0.5,
+                            }}
+                        >
+                            {transcript}
+                        </Typography>
+                    </Card>
+
+                )
+            }
+
+
         </Box>
     )
 }

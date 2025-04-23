@@ -41,7 +41,8 @@ const Messages = () => {
 
                     // Combine and sort messages and images by date
                     const combinedData = [...messagesData, ...imagesData]
-                        .sort((a, b) => b.date.seconds - a.date.seconds); 
+                        .filter(item => item?.date?.seconds !== undefined)
+                        .sort((a, b) => b?.date?.seconds - a?.date?.seconds); 
 
                     setCombinedMessages(combinedData);
                 }
@@ -58,9 +59,14 @@ const Messages = () => {
             if (!data.chatId && currentUser?.uid) {
                 const lastId = await getLastConversation();
                 console.log("Fetched lastId:", lastId);
-    
+                console.log("Current chatId:", currentUser.uid);
+                const otherUserId = lastId.replace(currentUser.uid, "");  
+                console.log("Other user ID:", otherUserId);
                 if (lastId && lastId !== data.chatId) {
-                    dispatch({ type: 'SET_CHAT_ID', payload: lastId });
+                    dispatch({
+                        type: 'CHANGE_USER',
+                        payload: { uid: otherUserId }
+                      });
                 }
                 else {
                     console.log("No lastId found or it matches the current chatId.");

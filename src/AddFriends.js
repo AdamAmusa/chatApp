@@ -3,7 +3,7 @@ import { acceptUser, handleSearch } from "./Search";
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "./context";
 import { isFriend, setUserInbox, useCheckUserInbox } from "./Authentication";
-import { ChatBubble, Close, PersonAdd } from "@mui/icons-material";
+import { ChatBubble, Close, Pending, PersonAdd } from "@mui/icons-material";
 import { ChatContext } from "./ChatContext";
 
 
@@ -87,8 +87,14 @@ const AddFriends = () => {
                         <Box sx={{ width: '100%', top: 80, flexDirection: 'row', display: 'flex', alignItems: 'center', padding: 2 }}>
                             <Avatar src={user?.photoURL} alt={user?.displayName} sx={{ width: 50, height: 50, marginRight: 2 }} />
                             {user?.displayName}
-                            <IconButton color="info" onClick={() => setUserInbox({ displayName: currentUser?.displayName, email: currentUser?.email, id: currentUser?.uid }, user?.uid, "pending")}>
-                                <PersonAdd />
+                            <IconButton
+                                color="info"
+                                onClick={() => {
+                                    setUserInbox({ displayName: currentUser?.displayName, email: currentUser?.email, id: currentUser?.uid }, user?.uid, "pending");
+                                    setUser({ ...user, status: "pending" }); // Update the user state to reflect the pending status
+                                }}
+                            >
+                                {user?.status === "pending" ? <Pending /> : <PersonAdd />}
                             </IconButton>
                         </Box>
                     )}
@@ -107,7 +113,7 @@ const AddFriends = () => {
 
 
                 {Object.entries(requests).map(([userId, requestData]) => (
-                    <Box sx={{ width: '100%', top: 80, flexDirection: 'row', display: 'flex', alignItems: 'center', padding: 2 }}>
+                    <Box sx={{ width: '100%', top: 80, flexDirection: 'row', display: 'flex', alignItems: 'center', padding: 2 }} key={userId}>
                         <Avatar src={requestData?.photoURL} alt={requestData.displayName} sx={{ width: 50, height: 50, marginRight: 2 }} />
                         {requestData.displayName}
                         <IconButton color="success" onClick={() => acceptUser(currentUser, requestData)}>

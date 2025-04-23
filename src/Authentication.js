@@ -129,6 +129,42 @@ export const setLastConversation = async (chatId) => {
     }
 }
 
+export const getUser = async (userId) => {
+    try {
+        const userRef = doc(db, "users", userId);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+            console.log("User data:", userSnap.data());
+            return userSnap.data();
+        } else {
+            console.log("No such document!");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        return null;
+    }
+}
+
+export const updateDisplayName = async (newDisplayName) => {
+    try {
+        const user = auth.currentUser;
+        const userRef = doc(db, "users", user.uid);
+        if (user) {
+            await updateProfile(user, { displayName: newDisplayName });
+            await updateDoc(userRef, { displayName: newDisplayName });
+            console.log("Display name updated successfully:", newDisplayName);
+        } else {
+            console.error("No user is currently signed in.");
+        }
+    } catch (error) {
+        console.error("Error updating display name:", error);
+    }
+
+
+}
+
 export const getLastConversation = async () => {
     console.log("Fetching last conversation for user:", auth.currentUser.uid);
     try {

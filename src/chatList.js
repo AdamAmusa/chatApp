@@ -42,7 +42,7 @@ const ChatList = () => {
                 <ListItem disablePadding key={chat[0]} sx={{justifyContent: 'center', pb:1}}>
                      <ListItemButton onClick={() => handleSelect(chat[1].userInfo)} sx={{height:"3vw"}}>
                     <Box sx={{ display: "flex", alignItems: "center", width:"100%"}}>
-                        <Avatar sx={{width:30, height:30, color:"inherit"}} />
+                        <Avatar sx={{width:30, height:30, color:"inherit"}}  src={chat[1].userInfo.photoUrl || 'https://via.placeholder.com/150' } alt={chat[1].userInfo.displayName}/>
                         <Typography variant="body1" sx={{ ml: 2, fontSize: "20px", color: "black"}}>
                                 {chat[1].userInfo.displayName}
                             </Typography>
