@@ -1,46 +1,51 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ChatContext } from "./ChatContext";
 import { AuthContext } from "./context";
 import { Paper, Box, Typography, Avatar, CircularProgress } from "@mui/material";
-
+import { getUser } from "./Authentication";
 
 
 
 const Message = ({ message, type }) => {
     const { currentUser } = useContext(AuthContext);
     const { data } = useContext(ChatContext);
+    const [otherUser, setOtherUser] = useState(null);
 
     const isSender = message?.senderId === currentUser?.uid;
 
-    // Enhanced timestamp formatting
+    // Fetch other user's data when component mounts or data changes
+    useEffect(() => {
+        const fetchOtherUser = async () => {
+            if (!isSender && data?.user?.uid) {
+                const userData = await getUser(data.user.uid);
+                setOtherUser(userData);
+            }
+        };
+        fetchOtherUser();
+    }, [data?.user?.uid, isSender]);
+
     const formatDateTime = (timestamp) => {
         if (!timestamp) return '';
 
         let messageDate;
         if (timestamp.toDate) {
-            // Firestore Timestamp object
             messageDate = timestamp.toDate();
         } else if (timestamp instanceof Date) {
-            // JavaScript Date object
             messageDate = timestamp;
         } else {
-            // Assume it's a date string
             messageDate = new Date(timestamp);
         }
         const today = new Date();
 
-        // Check if the message was sent today
         const isToday = messageDate.toDateString() === today.toDateString();
 
         if (isToday) {
-            // If message is from today, show only time
             return messageDate.toLocaleTimeString('en-UK', {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: false
             });
         } else {
-            // If message is from another day, show date and time
             return messageDate.toLocaleDateString('en-UK', {
                 year: 'numeric',
                 month: 'short',
@@ -71,8 +76,8 @@ const Message = ({ message, type }) => {
         >
             {!isSender && (
                 <Avatar
-                    src={data.user?.photoURL || 'https://via.placeholder.com/150'}
-                    alt={data.user?.displayName}
+                        src={otherUser?.photoURL || 'https://via.placeholder.com/150'}
+                        alt={otherUser?.displayName}
                     sx={{
                         width: 32,
                         height: 32,

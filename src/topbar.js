@@ -12,7 +12,6 @@ import { ChatContext } from './ChatContext';
 import { getUser } from './Authentication';
 
 const TopBar = () => {
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [user, setUser] = useState(null);
   const { data } = useContext(ChatContext);
 
