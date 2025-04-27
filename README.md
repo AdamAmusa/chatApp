@@ -1,70 +1,56 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Messaging and Video Calling App
+## Visit the web app with these links!
+https://chat-e48d2.web.app 
+https://chat-e48d2.firebaseapp.com
+## Login
+#### If an account has been registered, enter your credentials into the form provided on the login page.
+#### Press *LOG IN WITH GOOGLE* to use your Google account to authenticate into the application.
+![image](https://github.com/user-attachments/assets/0e782a5a-77bb-4b12-a9b8-a2124a9fb379)
 
-## Available Scripts
+## Sign Up
+#### If it's your first time using the application, navigate to the signup page by clicking the *Sign up* link.
+#### Enter a Name, Email,  password, and your password again for confirmation.
+![image](https://github.com/user-attachments/assets/84a7bd04-b03d-4abd-978a-45633445c693)
 
-In the project directory, you can run:
 
-### `npm start`
+## Add Friends
+#### Navigate to the friends page by clicking the add person icon.
+#### Enter an email in the search bar and look for a user by pressing *Enter*
+#### If a user exists profile will appear with the user's name and a button to send a request.
+#### Now you are set to begin conversing!
+![image](https://github.com/user-attachments/assets/f20e37af-70c6-4bc1-a9f3-8d17ff6d642b)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+## Messaging
+#### Select a user you wish to converse with from the list of users to the left of the screen.
+#### Type a message in the input field and press *Enter* or click *Send*.
+#### You can also input an emoji along with your text by clicking the 🙂 icon. 
+#### Send images by clicking the photo icon next to the input field. This button will open your file explorer, where you can select an image to upload.
+![image](https://github.com/user-attachments/assets/b88e8c5c-abac-4a7b-b03d-4f893e441c6e)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+## Profile
+####  To the bottom left of the screen, you should see an icon with your display name next to it. Click it and you are provided the option to update your profile, bio and display name.
+#### In the top right of the screen is the other user's profile. Click it and you can learn more about them.
+![image](https://github.com/user-attachments/assets/c1b4b895-97a2-4eda-a26b-de5be39a850a)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Calling
+#### Select a preferred user from your messages list and press the video recorder icon.
+#### You will be directed to the call page where you will wait until your callee accepts your call
+#### When your callee has finally joined the call, you can perform actions on them such as:
+- **Muting:** Toggle the speaker icon located in the video box to mute or unmute the user
+- **Enable CC**: Toggle the cc icon to enable live captions, and subtitles will appear when your callee speaks.
+#### You can also perform actions on yourself also which include:
+- **Muting:** Toggle the microphone button at the bottom of the screen to mute or unmute your microphone.
+- **Toggle Camera**: Press the camera icon beside the end call button to switch on/off your camera
+- **Leave Call**: You can end the call by pressing the red end call button; this will redirect you back to the chat page.
+![image](https://github.com/user-attachments/assets/9efd80c2-1adc-4323-a4f0-899a499abde2)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+#### Dependencies
+- Video calling requires both a microphone and a camera to be plugged into the desktop
+- The website is only suitable for Desktops and Laptops
