@@ -54,3 +54,6 @@ https://chat-e48d2.firebaseapp.com
 #### Dependencies
 - Video calling requires both a microphone and a camera to be plugged into the desktop
 - The website is only suitable for Desktops and Laptops
+
+BackEnd Repo: https://github.com/AdamAmusa/chatApp-Backend
+Deployment Repo: https://github.com/AdamAmusa/chat_production
